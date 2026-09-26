@@ -1,0 +1,68 @@
+name: Automerge agent PRs
+
+# Squash-merges an open, non-draft PR from an agent/* branch of THIS repository
+# once CI (check + agent-review) is green. Human PRs are never auto-merged, and
+# PRs that touch the guarded paths wait for a human.
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+jobs:
+  merge:
+    # head_repository check: workflow_run runs with this repo's write token, so
+    # without it a green PR from a fork of this public repo could be merged.
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      startsWith(github.event.workflow_run.head_branch, 'agent/')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Merge if eligible
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          # Same-repository PRs only; fork PRs never appear in this list, so a
+          # fork branch that reuses an agent/* name cannot be picked instead.
+          PR_FROM_RUN: ${{ github.event.workflow_run.pull_requests[0].number }}
+        run: |
+          set -uo pipefail
+          # Assign first, then test: `bash -e` does not abort on a failed $(...)
+          # inside `if [ ]`, so every check below fails closed explicitly.
+          pr="${PR_FROM_RUN:-}"
+          if [ -z "$pr" ]; then echo "no same-repo PR for $BRANCH"; exit 0; fi
+          state=$(gh pr view "$pr" --repo "$REPO" --json state -q .state)
+          if [ "$state" != "OPEN" ]; then echo "PR $pr is $state"; exit 0; fi
+          draft=$(gh pr view "$pr" --repo "$REPO" --json isDraft -q .isDraft)
+          if [ "$draft" != "false" ]; then echo "draft or unknown; not merging"; exit 0; fi
+          # --json files truncates at 100; paginate and cross-check the count.
+          files=$(gh api --paginate "repos/$REPO/pulls/$pr/files" --jq '.[].filename')
+          n_files=$(printf '%s\n' "$files" | grep -c . || true)
+          n_expected=$(gh pr view "$pr" --repo "$REPO" --json changedFiles -q .changedFiles)
+          if [ "$n_files" != "$n_expected" ]; then echo "::error::file list incomplete"; exit 1; fi
+          # Anything that can change a claim, a number, or the gate itself waits
+          # for a human: all of code/ (a new file there can shadow an import used
+          # by the assertion scripts), figures/, paper/, raw data, workflows, the
+          # mission, HUMAN_TODO, and build/lint config in any directory (a
+          # lowercase `makefile` or `GNUmakefile` overrides `Makefile`; latexmkrc
+          # runs Perl; ruff/pyproject config can switch off lint). Case-insensitive.
+          # In practice automerge lands backlog and documentation updates only.
+          if printf '%s\n' "$files" | grep -qiE '^\.github/|^docs/AGENT_MISSION\.md$|^HUMAN_TODO\.md$|^data/|^code/|^figures/|^paper/|(^|/)(gnu)?makefile$|(^|/)\.?latexmkrc$|(^|/)(\.?ruff|pyproject)\.toml$'; then
+            echo "touches a guarded path; leaving for human review"
+            gh pr comment "$pr" --repo "$REPO" --body "Green, but this PR touches a guarded path (workflows, mission, code/, figures/, paper/, raw data, build or lint config, or HUMAN_TODO). Needs a human merge."
+            exit 0
+          fi
+          head_now=$(gh pr view "$pr" --repo "$REPO" --json headRefOid -q .headRefOid)
+          if [ "$head_now" != "$HEAD_SHA" ]; then echo "head moved since CI ran"; exit 0; fi
+          gh pr merge "$pr" --repo "$REPO" --squash --delete-branch --match-head-commit "$HEAD_SHA"
+          gh workflow run ci.yml --repo "$REPO" --ref main

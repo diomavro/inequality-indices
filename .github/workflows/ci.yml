@@ -1,0 +1,144 @@
+name: CI
+
+# `make check` is the whole gate: lint, every counterexample the paper states,
+# reproduction of every number the paper quotes, the figure audit, and a clean
+# LaTeX build. Nothing here touches the network: the raw PIP data is committed.
+
+on:
+  push:
+    branches: [main]
+  # `ready_for_review` is not in the default set: without it a draft PR that is
+  # later marked ready never re-runs CI, so automerge never sees a green run.
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  # automerge dispatches this after squash-merging: pushes made with
+  # GITHUB_TOKEN do not trigger `push` workflows, but workflow_dispatch does.
+  workflow_dispatch:
+
+# GitHub bills a one-minute minimum per job; cancel superseded PR runs, never main.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: code/requirements.txt
+      - name: Install TeX
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends \
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra \
+            texlive-fonts-recommended lmodern latexmk
+      - name: Install Python dependencies
+        run: python -m pip install -r code/requirements.txt
+      - name: make check
+        run: make check PY=python
+
+  # Academic repo: no AI co-author trailer may enter the history (the squash
+  # message carries the PR's commit messages). A grep, not a model call.
+  trailers:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: No AI co-author trailers
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if git log --format=%B "$BASE..$HEAD" | grep -iE '^[[:space:]]*(co-authored-by|co-developed-by|assisted-by):.*(claude|anthropic)|generated with \[?claude code'; then
+            echo "::error::Remove the AI co-author trailer / 'Generated with Claude Code' line (docs/AGENT_MISSION.md, invariant 8)."
+            exit 1
+          fi
+
+  # Adversarial review of agent PRs only (branches agent/*, same repository).
+  # Reviewer-only: it can block a PR but never pushes. Human PRs are reviewed
+  # by the human who opens them.
+  agent-review:
+    needs: check
+    if: >-
+      github.event_name == 'pull_request' &&
+      startsWith(github.head_ref, 'agent/') &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Review
+        uses: anthropics/claude-code-action@v1
+        # A failed or skipped review must still reach the gate below, which
+        # fails closed; the gate, not this step, decides.
+        continue-on-error: true
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # Agent PRs are opened by the Claude GitHub App; without this the
+          # action refuses bot-triggered runs and every agent PR stays red
+          # (tail-lab lost four days to this, its PR #64).
+          allowed_bots: 'claude'
+          claude_args: '--max-turns 40 --allowedTools Bash,Read,Grep,Glob'
+          prompt: |
+            First run `touch /tmp/claude-review-ran`.
+
+            You are an adversarial reviewer for an academic paper repository.
+            Read docs/AGENT_MISSION.md, then review `git diff origin/main...HEAD`.
+            Check, by running code where possible:
+            - every mathematical claim added or changed is true (try to break it
+              numerically; a claim "verified" only on favourable cases is a defect);
+            - every number in the manuscript that comes from data is a macro in
+              paper/pip_macros.tex, and each sentence describes its macro correctly;
+            - no invariant in docs/AGENT_MISSION.md is broken;
+            - nothing was changed that the PR description does not mention.
+            Do not report style.
+
+            Write your report (findings with file:line and the command that shows
+            each one) to /tmp/review.md, then write exactly one word to /tmp/verdict:
+            PASS (nothing significant), FINDINGS (minor issues, safe to merge), or
+            DEFECT (a false claim, wrong number, or broken invariant; must not merge).
+      - name: Post review
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          if [ -s /tmp/review.md ]; then
+            gh pr comment "$PR" --repo "${{ github.repository }}" --body-file /tmp/review.md
+          fi
+      - name: Gate on verdict
+        if: always()
+        run: |
+          # claude-code-action can skip silently (expired token, or this branch's
+          # ci.yml differs from main's); a review that never ran must not pass.
+          if [ ! -f /tmp/claude-review-ran ]; then
+            echo "::error::Reviewer did not run. Rebase onto main, or check CLAUDE_CODE_OAUTH_TOKEN."
+            exit 1
+          fi
+          verdict=$(tr -d '[:space:]' < /tmp/verdict 2>/dev/null | tr '[:lower:]' '[:upper:]')
+          echo "verdict: ${verdict:-<none>}"
+          case "$verdict" in
+            PASS|FINDINGS) exit 0 ;;
+            *) echo "::error::Review verdict '${verdict:-none}' blocks merge."; exit 1 ;;
+          esac

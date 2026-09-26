@@ -1,0 +1,37 @@
+# LaTeX build products
+*.aux
+*.log
+*.out
+*.toc
+*.nav
+*.snm
+*.vrb
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+*.dvi
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.coverage
+
+# Local / secrets
+.env
+.vscode/
+.claude/worktrees/
+.claude/settings.local.json
+
+# Internal drafting artifacts (kept locally, not published):
+# simulated review rounds, write-paper pipeline state, and the pre-2026-09-26
+# submission package, which predates the corrections and must not be sent.
+reports/
+submission/
+pipeline-state.json
+proof-audit.json
