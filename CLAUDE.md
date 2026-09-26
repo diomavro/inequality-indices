@@ -2,6 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Submission Metadata
+
+**Author:** Diomides Mavroyiannis; Noemie Mavroyiannis
+**Affiliation:** Milestone Institute, Budapest, Hungary (Diomides)
+**Email:** dmavroyiannis8@gmail.com
+**Target Journal:** Journal of Economic Inequality (fallback: Review of Income and Wealth)
+**Funding:** None
+**Competing Interests:** None
+
 ## Project
 
 Academic paper: "What Should We Ask of an Inequality Measure? Axioms, Proofs, and How Often They Bind in Survey Data" by Diomides and Noemie Mavroyiannis. Evaluates eight inequality indices (Var, CV, VL, Gini, GE, Atkinson, percentile ratios, three Zenga versions Z / Z_N / Z*) against eleven properties, then tests how often the axioms bind on World Bank PIP percentile data (1,955 comparable survey pairs, 143 countries).

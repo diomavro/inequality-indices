@@ -51,13 +51,35 @@ reorders, or ticks items. Close items as `**Done YYYY-MM-DD (who)**: ...`.
 
 ## Research decisions (2026-09-26, from internal review)
 
-- [ ] **Restructure?** Top recommendation of the internal review: move the textbook
-      proofs of Sections 3–5 to an appendix (about 53 → 30 pages) and lead with
-      the empirical question; consider retitling around the empirics.
-- [ ] **Target journal.** Choose among fee-free journals once the structure is
-      settled (candidates discussed: Journal of Economic Inequality, Social
-      Indicators Research, Economics Bulletin).
+- [x] **Done 2026-09-26 (Claude, at Dio's request)**: restructured in PR #1:
+      property-by-property proofs moved to Appendix A, long Section 6 proofs to
+      Appendix B, main text 36 → 28 pages, no content removed.
+- [x] **Done 2026-09-26 (Claude, at Dio's request)**: target journal chosen:
+      Journal of Economic Inequality (no submission fee, no length cap,
+      single-anonymous review, preprints allowed); fallback Review of Income
+      and Wealth (abstract ≤150 words, blind manuscript, recheck its fee).
 - [ ] **Statistical inference.** The main weakness is the absence of standard
       errors. Formal Lorenz-dominance tests need microdata (LIS registration).
-- [ ] **Rebuild the submission package** once the above are settled; the old
-      `submission/` folder is stale and is not in the repo.
+- [x] **Done 2026-09-26 (Claude)**: JEI package built locally in `submission/`
+      (not in the repo): manuscript PDF, LaTeX source zip, cover letter. The
+      paper now has a Statements and Declarations section.
+
+## Submitting to the Journal of Economic Inequality (2026-09-26)
+
+- [ ] **Add Noemie's affiliation** to the author block in
+      `paper/inequality_indices.tex` (only Dio's is there).
+- [ ] **Decide the AI-use statement.** Springer asks authors to document use of
+      AI tools beyond copy-editing (in the methods section). Much of this
+      revision, the data pipeline, and the checks were produced with Claude; a
+      sentence in the declarations or the introduction is likely required.
+      Suggested: "The authors used an AI assistant (Claude, Anthropic) to help
+      write analysis code, check proofs numerically, and edit the text; the
+      authors verified all results and take full responsibility for the paper."
+- [ ] **Archive a release on Zenodo** (zenodo.org → GitHub → enable the repo,
+      then publish a GitHub release) and add the DOI to the data-availability
+      statement. JEI requires a repository deposit on acceptance; a Zenodo DOI
+      is the safe choice.
+- [ ] **Submit** through JEI's Springer submission system with
+      `submission/main_submission.pdf`, `submission/source.zip`, and
+      `submission/cover_letter.pdf`; declare funding/competing interests in the
+      form as in the paper.
