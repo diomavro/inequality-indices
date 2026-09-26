@@ -32,7 +32,7 @@
 \newtheorem{conjecture}[theorem]{Conjecture}
 
 % ---- Formatting ----
-\doublespacing
+\onehalfspacing
 \hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
 
 % ---- Custom commands ----
@@ -125,11 +125,12 @@ The remainder of the paper is organized as follows.
 Section~\ref{sec:prelim} establishes the formal framework.
 Section~\ref{sec:properties} defines and motivates each property.
 Section~\ref{sec:indices} introduces the indices.
-Section~\ref{sec:evaluation} evaluates each index against each property.
+Section~\ref{sec:evaluation} summarizes which index satisfies which property.
 Section~\ref{sec:characterization} presents the characterization and impossibility results.
 Section~\ref{sec:empirics} takes the indices to the PIP data.
 Section~\ref{sec:guidance} offers practical guidance.
 Section~\ref{sec:conclusion} concludes.
+Appendix~\ref{app:table} proves every entry of Table~\ref{tab:summary}, and Appendix~\ref{app:proofs} contains the longer proofs of Section~\ref{sec:characterization}.
 
 % ============================================================
 % SECTION 2: PRELIMINARIES
@@ -427,7 +428,7 @@ where $\overline{\ln y} = \frac{1}{n}\sum_{i=1}^n \ln y_i$.
 \end{definition}
 
 The variance of logarithms has been widely used in labor economics, partly because log wages are approximately normally distributed and partly because wage regressions are typically specified in logs \citep{Juhn1993}.
-Despite its popularity, this measure has a fundamental flaw: it can violate the Pigou-Dalton transfer principle, as we demonstrate in Section~\ref{sec:evaluation}.
+Despite its popularity, this measure has a fundamental flaw: it can violate the Pigou-Dalton transfer principle (Proposition~\ref{prop:transfer} in Appendix~\ref{app:table}).
 
 % ---- 4.4 Gini Coefficient ----
 \subsection{Gini Coefficient}\label{sec:gini}
@@ -550,14 +551,14 @@ Because $F^{-1}_{\bfy}$ is piecewise constant, $Z^*$ can be computed as a sum of
 The versions can differ substantially in small populations ($Z^*(1, 3) \approx 0.519$) but converge as $n$ grows, and in the percentile data of Section~\ref{sec:empirics} we use $Z^*$.
 The tie-merging in $Z_N$ also breaks the transfer principle.
 A progressive transfer that makes two incomes equal merges two split points into one, and this can raise the index: moving $0.1$ from the second to the first person in $(1, 1.2, 3)$ gives $(1.1, 1.1, 3)$ and raises $Z_N$ from $0.386$ to $0.422$, while $Z$ and $Z^*$ fall.
-$Z$ and $Z^*$ satisfy the transfer principle; none of the three satisfies diminishing transfer sensitivity or subgroup consistency (Section~\ref{sec:evaluation}).
+$Z$ and $Z^*$ satisfy the transfer principle; none of the three satisfies diminishing transfer sensitivity or subgroup consistency (Propositions~\ref{prop:dts} and~\ref{prop:subgroup} in Appendix~\ref{app:table}).
 
 % ============================================================
 % SECTION 5: EVALUATION
 % ============================================================
 \section{Which Index Satisfies What?}\label{sec:evaluation}
 
-We now systematically evaluate each index against each property.
+Table~\ref{tab:summary} summarizes which index satisfies which property.
 Results are summarized in Table~\ref{tab:summary}.
 
 % ---- Summary Table ----
@@ -598,7 +599,398 @@ The GE column is split to show that $GE_\alpha$ with $\alpha < 2$ (including the
 
 Among all indices on our list, only $GE_\alpha$ with $\alpha < 2$ satisfies scale invariance, the transfer principle, DTS, additive decomposability, and subgroup consistency simultaneously; $GE_0$ (MLD) and $GE_1$ (Theil) are the most widely used members in this range.\footnote{$GE_2 = \frac{1}{2}\text{CV}^2$, despite its popularity for top-income analysis, fails DTS and treats transfers among the poor identically to transfers among the rich. Researchers should choose $\alpha$ deliberately: lower $\alpha$ weights the bottom, higher $\alpha$ the top, but only $\alpha < 2$ ensures bottom-sensitivity.}
 
-We now prove the entries that are not immediate from the definitions.
+Appendix~\ref{app:table} proves every entry that is not immediate from the definitions, property by property, with an explicit counterexample for every failure.
+
+% ============================================================
+% SECTION 6: CHARACTERIZATION AND IMPOSSIBILITY
+% ============================================================
+\section{Characterization and Impossibility Results}\label{sec:characterization}
+
+We now present two fundamental results that deepen our understanding of the landscape of inequality measures.
+
+% ---- 6.1 Impossibility ----
+\subsection{The Impossibility of Reconciling Relative and Absolute Views}
+
+\begin{theorem}[Scale--Translation Impossibility]\label{thm:impossibility}
+There exists no inequality index $I : \D \to \R_{\geq 0}$ that simultaneously satisfies normalization (Property~\ref{ax:norm}), continuity (Property~\ref{ax:cont}), scale invariance (Property~\ref{ax:scale}), and translation invariance (Property~\ref{ax:trans}).
+\end{theorem}
+
+\textbf{Intuition.}
+The relative view says that inequality is about ratios: \$10{,}000 vs.\ \$100{,}000 is the same as \$1 vs.\ \$10.
+The absolute view says inequality is about gaps: a \$90{,}000 gap is a \$90{,}000 gap regardless of the income level.
+The two views disagree whenever incomes grow or shrink by more than a uniform amount, and no continuous measure can agree with both.
+
+The proof is in Appendix~\ref{app:proofs}.
+
+% ---- 6.2 Characterization of GE ----
+\subsection{The Generalized Entropy Characterization}
+
+\begin{theorem}[Shorrocks Characterization, \citealp{Shorrocks1980}]\label{thm:shorrocks}
+An inequality index $I : \D \to \R_{\geq 0}$ satisfies anonymity (Property~\ref{ax:anon}), normalization (Property~\ref{ax:norm}), continuity (Property~\ref{ax:cont}), population invariance (Property~\ref{ax:pop}), scale invariance (Property~\ref{ax:scale}), and additive decomposability (Property~\ref{ax:decomp}), and has continuous first-order partial derivatives, if and only if $I$ is a positive scalar multiple of $GE_\alpha$ for some $\alpha \in \R$.
+\end{theorem}
+
+\textbf{Intuition.}
+The power of this theorem lies in what it rules out.
+If a researcher wants an inequality measure that is scale-invariant, can compare populations of different sizes, behaves continuously, and can be decomposed into within-group and between-group components, then the \emph{only} options are the GE indices.
+The Atkinson index and the variance of logarithms, which satisfy every other condition, are therefore not additively decomposable.
+The Gini is excluded as well (Proposition~\ref{prop:decomp}), although it falls outside the theorem because it is not differentiable where incomes tie.
+
+We state this result without proof; the full argument is in \citet{Shorrocks1980}.
+The key step is that additive decomposability and scale invariance force the index to satisfy the functional equation $I(\bfy) = \sum_k w_k(\mu_k, n_k, \mu, n)\,I(\bfy_k) + I(\mu_1\bfone_1, \ldots, \mu_K\bfone_K)$ with specific weight structure.
+The differentiability assumption rules out irregular solutions of the resulting functional equations.
+Remark~\ref{rem:independence} in Appendix~\ref{app:proofs} shows which of the axioms cannot be dropped.
+
+
+
+% ---- 6.3 The Lorenz Equivalence ----
+\subsection{The Transfer--Lorenz Equivalence}
+
+\begin{theorem}[Dasgupta--Sen--Starrett, \citealp{DasGupta1973}]\label{thm:dss}
+For an anonymous inequality index $I$, the following are equivalent:
+\begin{enumerate}[label=(\roman*)]
+    \item $I$ satisfies the Pigou-Dalton transfer principle (Property~\ref{ax:pd}).
+    \item $I$ is Lorenz-consistent (Property~\ref{ax:lorenz}).
+\end{enumerate}
+\end{theorem}
+
+\textbf{Intuition.}
+This theorem tells us that the transfer principle and Lorenz consistency are really two ways of saying the same thing.
+The transfer principle is a ``local'' condition (one pairwise transfer), while Lorenz consistency is a ``global'' condition (the entire curve lies above).
+The bridge between them is the Hardy--Littlewood--P\'olya theorem, which shows that any Lorenz improvement can be decomposed into elementary progressive transfers.
+
+The proof is in Appendix~\ref{app:proofs}.
+
+% ---- 6.4 Compatibility ----
+\subsection{Which Properties Can Coexist?}\label{sec:compatibility}
+
+The results of this section reveal not only individual properties of specific indices, but a deeper structure: some pairs of desirable properties are logically incompatible, while others are not only compatible but mutually reinforcing.
+We organise these relationships in Proposition~\ref{prop:compatibility} and Table~\ref{tab:compatibility}.
+
+\begin{proposition}[Property Compatibility]\label{prop:compatibility}
+Among anonymous, normalised, continuous, population-invariant inequality indices:
+\begin{enumerate}[label=(\roman*)]
+    \item \textbf{Scale invariance and translation invariance are incompatible.}
+    No such index satisfies both simultaneously (Theorem~\ref{thm:impossibility}).
+
+    \item \textbf{Additive decomposability and scale invariance jointly force the GE family.}
+    Any index satisfying scale invariance and additive decomposability (in addition to the four standard axioms) must be a positive multiple of $GE_\alpha$ for some $\alpha$ (Theorem~\ref{thm:shorrocks}).
+    For example, the Gini is scale-invariant but not decomposable, and the variance is decomposable but not scale-invariant.
+
+    \item \textbf{Additive decomposability implies subgroup consistency.}
+    Any additively decomposable index satisfying the transfer principle is subgroup-consistent.
+    \begin{proof}
+    Let $I$ be additively decomposable with decomposition~\eqref{eq:decomp}, and suppose within-group $k$ inequality increases: $I(\bfy'_k) > I(\bfy_k)$, with $\mu(\bfy'_k) = \mu(\bfy_k)$ and all other groups unchanged.
+    Since the weights $w_k$ depend only on subgroup sizes and means, all weights are unchanged.
+    The between-group term is also unchanged (group means are unchanged).
+    Therefore
+    \[
+        I(\bfy') = \sum_{j \neq k} w_j I(\bfy_j) + w_k I(\bfy'_k) + I_{\text{between}} > \sum_{j} w_j I(\bfy_j) + I_{\text{between}} = I(\bfy),
+    \]
+    provided $w_k > 0$.
+    The weights are indeed positive: a progressive transfer inside group $k$ changes neither the group means nor the other groups, so by~\eqref{eq:decomp} it changes $I$ by $w_k$ times the change in $I(\bfy_k)$; the transfer principle requires both changes to be negative, so $w_k > 0$.
+    \end{proof}
+    The converse does not hold: $A_\varepsilon$ is subgroup-consistent but not additively decomposable.
+
+    \item \textbf{The transfer principle and Lorenz consistency are equivalent.}
+    (Theorem~\ref{thm:dss}.)
+    Any index satisfying one satisfies the other; they cannot be separated.
+
+    \item \textbf{Translation invariance is compatible with the transfer principle, diminishing transfer sensitivity, and additive decomposability.}
+    The exponential absolute index $E_\kappa$ of Theorem~\ref{thm:optimality} satisfies all three.
+    What translation invariance rules out is scale invariance, by (i).
+\end{enumerate}
+\end{proposition}
+
+\begin{table}[H]
+\centering
+\caption{Pairwise Compatibility of Key Properties}
+\label{tab:compatibility}
+\small
+\begin{tabular}{l c c c c c}
+\toprule
+ & Scale Inv. & Trans.\ Inv. & Transfer Pr. & Add.\ Decomp. & Subgr.\ Cons. \\
+\midrule
+Scale Inv.       & ---  & \textbf{NO}  & Yes & Yes$^*$ & Yes \\
+Trans.\ Inv.     & \textbf{NO} & --- & Yes$^\dagger$ & Yes$^\dagger$ & Yes$^\dagger$ \\
+Transfer Pr.     & Yes  & Yes$^\dagger$ & --- & Yes & Yes \\
+Add.\ Decomp.    & Yes$^*$ & Yes$^\dagger$ & Yes & --- & Yes \\
+Subgr.\ Cons.    & Yes  & Yes$^\dagger$ & Yes & Yes & --- \\
+\bottomrule
+\end{tabular}
+\vspace{0.5em}
+
+\footnotesize
+Notes: ``Yes'' = jointly satisfiable by at least one index; ``\textbf{NO}'' = incompatible for any continuous normalised index (Theorem~\ref{thm:impossibility}).
+$^*$Scale invariance + additive decomposability forces the GE family (Theorem~\ref{thm:shorrocks}).
+$^\dagger$Attained by the variance and by the exponential absolute index $E_\kappa$ (Theorem~\ref{thm:optimality}); translation invariance is incompatible only with scale invariance.
+\end{table}
+
+The compatibility structure has a direct practical implication.
+A researcher who requires decomposability for structural analysis effectively has no choice among scale-invariant measures: the GE family is uniquely determined by Theorem~\ref{thm:shorrocks}.
+A researcher who needs only subgroup consistency has a slightly wider menu: the Atkinson index also qualifies, but the Gini and the Zenga indices do not (Proposition~\ref{prop:subgroup}).
+A researcher who adopts the absolute view (translation invariance) gives up scale invariance but nothing else: the exponential index $E_\kappa$ is decomposable and bottom-sensitive, and the Kolm index is its ordinal equivalent.
+
+% ---- 6.5 Split-Point Impossibility ----
+\subsection{Impossibility for Split-Point Indices}\label{sec:zenga_impossibility}
+
+The split-point average $Z$ fails population invariance (Section~\ref{sec:zenga}).
+One might hope that a different choice of pointwise function could fix this.
+The following theorem shows that it cannot: \emph{any} index that averages a continuous function of the conditional-mean ratios over the $n - 1$ split points with equal weights must be trivial if it is to satisfy population invariance.
+
+\begin{theorem}[Split-Point Impossibility]\label{thm:zenga_impossibility}
+Let $f : (0, \infty) \to \R$ be continuous with $f(1) = 0$, and define
+\begin{equation}\label{eq:zenga_type}
+I_f(\bfy) = \frac{1}{n-1}\sum_{i=1}^{n-1} f\!\left(\frac{\bar{y}_i^-}{\bar{y}_i^+}\right).
+\end{equation}
+If $I_f$ satisfies population invariance, then $f \equiv 0$ on $(0, 1]$, so $I_f$ is identically zero.
+\end{theorem}
+
+\textbf{Intuition.}
+Population replication creates new split points that ``interpolate'' between the original ones.
+The averaging denominator changes from $n-1$ to $kn-1$, and the new pointwise values at the interpolated split points cannot exactly compensate.
+The proof shows that the functional equation generated by 2-fold replication forces $f$ to be its own midpoint average on orbits that converge to the fixed point $r = 1$; continuity and $f(1) = 0$ then force $f \equiv 0$.
+
+The proof is in Appendix~\ref{app:proofs}.
+
+\begin{remark}
+The theorem locates the problem in the equal weights, and the two other versions of Definition~\ref{def:integral_zenga} escape it in different ways.
+Zenga's finite-population index $Z_N$ weights each distinct income value by its population share, which restores population invariance but makes the index discontinuous where incomes tie.
+The empirical index $Z^*$ integrates over all $p \in (0, 1)$; since the empirical quantile function is invariant under replication, it is population-invariant and continuous.
+\end{remark}
+
+% ---- 6.6 Axiomatic Optimality ----
+\subsection{Axiomatic Optimality Bounds}\label{sec:optimality}
+
+How many of the eleven properties can one index satisfy?
+The answer is ten, and it is the same for relative and absolute indices.
+For the absolute side we need the exponential index
+\begin{equation}\label{eq:expo}
+E_\kappa(\bfy) = \frac{1}{n}\sum_{i=1}^n e^{\kappa(\mu - y_i)} - 1, \qquad \kappa > 0,
+\end{equation}
+which is an increasing transformation of the Kolm index $K_\kappa(\bfy) = \kappa^{-1}\ln[1 + E_\kappa(\bfy)]$ \citep{Kolm1976a}.
+$E_\kappa$ stands to $K_\kappa$ as $GE_{1-\varepsilon}$ stands to $A_\varepsilon$: the two rank distributions identically, but only the first is additively decomposable.
+The parameter $\kappa$ is measured in inverse income units, so it has to be chosen for the currency and period at hand.
+
+\begin{theorem}[Axiomatic Optimality]\label{thm:optimality}
+Among the eleven properties of Section~\ref{sec:properties}:
+\begin{enumerate}[label=(\roman*)]
+    \item No inequality index satisfies all eleven.
+    \item $GE_\alpha$ with $\alpha < 2$ satisfies every property except translation invariance.
+    \item $E_\kappa$ with $\kappa > 0$ satisfies every property except scale invariance.
+\end{enumerate}
+\end{theorem}
+
+The proof is in Appendix~\ref{app:proofs}.
+
+\textbf{Intuition.}
+The variance, the best-known decomposable absolute index, treats transfers at all income levels alike, which suggests that absolute measures cannot be bottom-sensitive.
+That is a property of the variance, not of translation invariance.
+The absolute decomposable indices are exactly the variance and the exponential family \citep{Chakravarty1998,Bosmans2010}, just as the relative decomposable indices are the GE family, and in each class the members with the right curvature are bottom-sensitive.
+The choice between relative and absolute measurement is therefore a choice about which invariance one believes, not a choice between a better and a worse axiomatic package.
+Section~\ref{sec:empirics} shows that it is also the choice with the largest consequences in practice.
+
+% ============================================================
+% SECTION: EMPIRICS
+% ============================================================
+\section{Do the Axioms Bind? Evidence from Survey Data}\label{sec:empirics}
+
+The previous sections say which indices satisfy which properties.
+They do not say how often the differences matter.
+Two relative indices that both satisfy the transfer principle must agree whenever one Lorenz curve dominates another, and can disagree only when the curves cross.
+How often curves cross, and how often the indices then disagree, is an empirical question.
+\citet{Atkinson1970} posed it for 12 countries and \citet{Figini2000} for 69 distributions from the Luxembourg Income Study; we answer it for national income and consumption distributions from \PipCountries{} countries over six decades, and we add the comparison between relative and absolute indices.
+
+\subsection{Data and Design}
+
+We use the percentile file of the World Bank's Poverty and Inequality Platform \citep{WorldBankPIP2026,WorldBankPIPPercentiles2026}.
+For each country and survey year it reports the mean income or consumption of each of 100 equal-population groups, in 2017 PPP dollars per day.
+The file covers \PipDistributions{} distributions from \PipDistCountries{} countries between \PipYearMin{} and \PipYearMax{}.
+Most are computed from household microdata; the rest are reconstructed by the platform from grouped data or, for a few countries such as China, synthesised from separate urban and rural distributions.
+We treat each distribution as a population of 100 equally weighted incomes and compute every index of Section~\ref{sec:indices} on it, with the 90/10 ratio defined as in~\eqref{eq:pq}, the ratio of the 90th to the 10th percentile group mean.
+We also compute three absolute indices: the standard deviation, the absolute Gini $\mu G$ (half the mean absolute difference), and the Kolm index with $\kappa = 0.1$ per dollar-day.
+The theorems apply to any finite population, so they apply exactly to these 100-point distributions.
+Grouping into percentiles removes inequality within each percentile, which lowers every index slightly.
+The loss is small: our Gini differs from the platform's official Gini, computed from the underlying data, by at most \PipGiniMaxDiff{}, and our MLD differs from the official MLD by at most \PipMldMaxDiff{}.
+
+The platform groups surveys into \emph{comparable spells}, within which it judges the welfare concept, survey design, and coverage to be comparable.
+We compare each national survey with the next survey in the same spell, which yields \PipPairs{} pairs from \PipCountries{} countries.
+For each pair we record the sign of the change in every index and the relationship between the two Lorenz curves at the 99 interior percentiles: dominance (no crossing), a single crossing, or multiple crossings.
+Several indices rank distributions identically---the CV and $GE_2$, $A_1$ and the MLD, $A_2$ and $GE_{-1}$, $A_{0.5}$ and $GE_{0.5}$---so when we ask whether ``the indices'' agree we use one index per ordering: the Gini, $Z^*$, $GE_{-1}$, the MLD, $GE_{0.5}$, the Theil index, and $GE_2$.
+These seven satisfy the transfer principle; the four GE indices with $\alpha < 2$ also satisfy diminishing transfer sensitivity.
+The platform does not publish standard errors, so we cannot test whether a small change is statistically meaningful; instead we report results by the size of the change and with a noise screen described below.
+
+\subsection{What the Theorems Predict}
+
+When one Lorenz curve dominates, Theorem~\ref{thm:dss} requires every scale-invariant index that satisfies the transfer principle to move in the same direction (scale invariance lets the theorem compare distributions with different means).
+Dominance holds in \PipShareDom{} of pairs (\PipNDom{} pairs), and in every one of them all seven indices move in the direction the dominance implies.
+The two indices that violate the transfer principle behave differently.
+The 90/10 ratio moves against the Lorenz ranking in \PipPNinetyViol{} of the \PipNDom{} dominance pairs.
+The variance of logarithms does so in \PipVlViol{}: its violations of the transfer principle arise from transfers among incomes well above the geometric mean, as in the counterexample of Proposition~\ref{prop:transfer}, and in these data such changes never outweighed the rest of the change in the distribution.
+
+When the curves cross exactly once, \citet{Shorrocks1987} show that every relative index satisfying the transfer principle and their notion of transfer sensitivity ranks the distribution whose curve is higher at the bottom as more equal, provided that distribution also has the lower coefficient of variation.
+Their transfer sensitivity is defined through composite, variance-preserving transfers rather than our pairwise Property~\ref{ax:dts}, but $GE_\alpha$ with $\alpha < 2$ satisfies both.
+The condition holds in \PipNSF{} single-crossing pairs, and the four transfer-sensitive indices contradict the prediction in \PipSFViol{} of them.
+$GE_2$ agrees by construction, since the condition selects on the CV; the Gini and $Z^*$, which carry no such guarantee, also never contradict the prediction, so these pairs do not discriminate among indices.
+
+\subsection{How Often Relative Indices Disagree}
+
+Lorenz curves cross in \PipShareCross{} of pairs: \PipShareSingle{} cross once and \PipShareMulti{} cross more than once.
+This is in line with earlier evidence.
+\citet{Atkinson1970} found crossings in 50 of 66 pairwise comparisons of 12 countries, and \citet{Figini2000} notes that the share depends on how finely the curves are compared, from 25 percent with deciles \citep{Bishop1991} to 80 percent with 100 points \citep{Buhmann1988}.
+Using only the nine decile ordinates, our curves cross in \PipShareCrossDecile{} of pairs, because many crossings occur in the tails, where the curves are close.
+Dominance at the decile level does not, however, guarantee that the indices agree; the theorems require dominance at every point of the distribution being measured.
+
+When the curves cross, the seven indices agree on the direction of change in only \PipTpAgreeCross{} of pairs, and the four transfer-sensitive indices agree in \PipDtsAgreeCross{}.
+Most of this disagreement concerns small changes.
+Figure~\ref{fig:pip_size} sorts pairs by the absolute change in the Gini.
+When the Gini moves by less than a quarter of a point, the indices disagree in most single-crossing pairs; when it moves by more than two points, they disagree in about one pair in ten.
+Among the \PipNMaterialCross{} crossing pairs in which the Gini moves by at least one point, they disagree in \PipTpDisMaterialCross{}.
+Because the Gini is itself one of the indices, we also use a screen that treats the indices symmetrically: in each pair we compare the signs only of those indices whose log change exceeds that index's own median absolute log change across all pairs.
+Among the \PipNBigCross{} crossing pairs with at least two such indices, they agree in \PipTpAgreeBigCross{}.
+Without standard errors we cannot say how many of the remaining disagreements reflect sampling noise.
+The results are the same if we drop the distributions that are not computed from microdata: in the \PipNMicroPairs{} pairs of microdata surveys, the curves cross in \PipShareCrossMicro{} of pairs and the seven indices agree in \PipTpAgreeCrossMicro{} of crossing pairs.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{../figures/pip_by_size.pdf}
+\caption{Disagreement among transfer-principle indices, by size of change}
+\label{fig:pip_size}
+\begin{minipage}{0.85\textwidth}
+\footnotesize
+Notes: Share of consecutive comparable PIP survey pairs in which the seven transfer-principle indices do not all move in the same direction, by Lorenz relationship and by the absolute change in the Gini.
+Under Lorenz dominance the share is zero in every bin, as Theorem~\ref{thm:dss} requires.
+\end{minipage}
+\end{figure}
+
+Which indices disagree is predictable from their sensitivities (Figure~\ref{fig:pip_heat}).
+Indices with similar weighting rarely conflict: the Gini and the MLD move in opposite directions in \PipDisGiniMld{} of pairs, and the Gini and $Z^*$ in \PipDisGiniZenga{}.
+Indices that weight opposite ends of the distribution conflict often: $GE_2$, which is sensitive to the top, and the Atkinson index with $\varepsilon = 2$, which is sensitive to the bottom, disagree in \PipDisGeTwoAtkTwo{} of pairs.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\textwidth]{../figures/pip_disagreement.pdf}
+\caption{Pairwise disagreement on the direction of change}
+\label{fig:pip_heat}
+\begin{minipage}{0.72\textwidth}
+\footnotesize
+Notes: Each cell is the percentage of the \PipPairs{} survey pairs in which the two indices change in opposite directions.
+\end{minipage}
+\end{figure}
+
+\subsection{Relative Versus Absolute}
+
+The Gini and the absolute Gini move in opposite directions in \PipDisGiniAbs{} of pairs, a rate matched among relative indices only by pairs that weight opposite tails, such as $GE_2$ and the 90/10 ratio (\PipDisGeTwoPNinety{}).
+The conflict has a simple arithmetic source.
+Since $\Delta \ln(\mu G) = \Delta \ln \mu + \Delta \ln G$, the absolute Gini rises whenever growth in the mean exceeds the proportional fall in the Gini.
+In the PIP pairs the median absolute change in log mean income is \PipMedGrowth{} percent, against \PipMedDlnGini{} percent for the log Gini, and growth is the larger of the two in \PipShareGrowthExceeds{} of pairs.
+Hence, in \PipOppGiniDownAbsUp{} of the conflicts relative inequality falls while absolute inequality rises.
+Among the \PipNGrowth{} pairs in which mean income rose, the Gini fell in \PipGiniFellGrowth{}, and in \PipAbsUpGivenGiniDownGrowth{} of those the absolute Gini rose.
+Over the \PipLongN{} comparable spells that span at least ten years, the Gini fell with rising mean income in \PipLongNGiniDownGrowth{} spells, and the absolute Gini rose in \PipLongAbsUpGivenGiniDown{} of them.
+The choice of absolute index matters little: the Kolm index moves in the same direction as the absolute Gini in \PipKolmAgree{} of pairs and the standard deviation in \PipSdAgree{}, although the Kolm index depends on the unit of $\kappa$, which has to be fixed across countries whose mean incomes differ by a factor of more than \PipIncomeRange{}.
+
+The consequence is that Lorenz dominance, which settles the comparison for every relative index satisfying the transfer principle, does not settle the absolute one.
+Among the \PipNMaterialDom{} pairs in which the Gini moves by at least one point and one Lorenz curve dominates, the seven relative indices agree by Theorem~\ref{thm:dss}, but the absolute Gini moves the other way in \PipRelAbsOppMaterialDom{}.
+In the \PipNMaterialCross{} crossing pairs with changes of the same size, the relative and absolute Gini conflict in \PipRelAbsOppMaterialCross{}, about as often as the relative indices conflict among themselves (\PipTpDisMaterialCross{}).
+Taking all \PipNMaterial{} large changes together, the relative and absolute Gini conflict in \PipRelAbsOppMaterial{} of pairs and the relative indices in \PipTpDisMaterial{}.
+Figure~\ref{fig:pip_countries} shows four cases.
+In China between \PipChinaYears{}, the Gini of consumption rose from \PipChinaGiniA{} to \PipChinaGiniB{}, while mean consumption grew by a factor of \PipChinaMeanRatio{} and the absolute Gini by a factor of \PipChinaAbsRatio{}.
+In Brazil between \PipBrazilYears{}, the last decade of the spell in the figure, the Gini fell from \PipBrazilGiniA{} to \PipBrazilGiniB{}, yet the absolute Gini rose by a factor of \PipBrazilAbsRatio{} because mean income grew faster than relative inequality fell.
+In the United States and the United Kingdom the Gini ends within about ten percent of its starting value while the absolute Gini rises by up to a factor of two in the United States.
+The same disagreement drives the debate over global inequality \citep{Ravallion2004,Atkinson2010,NinoZarazua2017}; the PIP data quantify it for national trends in \PipCountries{} countries.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{../figures/pip_countries.pdf}
+\caption{Relative and absolute indices over time in four countries}
+\label{fig:pip_countries}
+\begin{minipage}{\textwidth}
+\footnotesize
+Notes: Each index is set to 100 in the first survey of one long comparable PIP spell per country. The absolute Gini is $\mu G$ in 2017 PPP dollars per day. China's national distributions are synthesised by the platform from urban and rural surveys.
+\end{minipage}
+\end{figure}
+
+% ============================================================
+% SECTION 8: PRACTICAL GUIDANCE
+% ============================================================
+\section{Practical Guidance for Applied Researchers}\label{sec:guidance}
+
+The results of the previous sections reveal a landscape of tradeoffs.
+No single index satisfies all desirable properties, and the choice of measure should be guided by the research question.
+We offer the following practical recommendations.
+
+\textbf{If decomposability matters, use the GE family.}
+For any study that requires decomposing inequality into within-group and between-group components---for example, decomposing wage inequality by education, gender, or race---the Generalized Entropy family is the only scale-invariant option (Theorem~\ref{thm:shorrocks}).
+Within the GE family, the choice of $\alpha$ should reflect the researcher's judgment about which part of the distribution matters most:
+\begin{itemize}
+    \item $\alpha = 0$ (MLD): more sensitive to changes at the bottom than the Theil ($\alpha < 0$ is more so). Suitable for poverty-focused analyses.
+    \item $\alpha = 1$ (Theil): balanced sensitivity; weights by income shares in decomposition. Suitable for general-purpose analysis.
+    \item $\alpha = 2$ (half-squared CV): more sensitive to changes at the top ($\alpha > 2$ is more so). Suitable for analyses focused on top-income dynamics.
+\end{itemize}
+
+\textbf{If welfare-theoretic foundations matter, use the Atkinson index.}
+The Atkinson index has a direct welfare interpretation through the equally distributed equivalent income.
+It satisfies all properties except translation invariance and additive decomposability, and it satisfies subgroup consistency, which is often sufficient for practical purposes.
+The parameter $\varepsilon$ has a clear interpretation as inequality aversion, making results transparent and facilitating sensitivity analysis.
+
+\textbf{If simplicity and communication matter, the Gini is defensible---with caveats.}
+The Gini coefficient is intuitive, bounded between 0 and 1, and has a geometric interpretation via the Lorenz curve.
+It satisfies the transfer principle and Lorenz consistency.
+However, researchers should be aware of its limitations: it cannot be decomposed additively, it fails subgroup consistency, and its transfer sensitivity depends on ranks rather than income levels.
+It is a reasonable summary statistic but a poor tool for decomposition.
+
+\textbf{Prefer the MLD to the variance of logarithms.}
+The VL fails the Pigou-Dalton transfer principle, so it can rise after a transfer from rich to poor.
+In the PIP data this failure never reversed a Lorenz ranking (Section~\ref{sec:empirics}), so VL trends for national distributions are unlikely to be misleading on this account; the risk is greater for distributions with long upper tails, where transfers among top incomes carry more weight.
+The MLD ($GE_0$) is also built on logarithms, satisfies the transfer principle, and decomposes additively, so it is the natural replacement.
+
+\textbf{Treat the Zenga index as a descriptive device.}
+The Zenga curve $1 - M^{-}(p)/M^{+}(p)$ shows how inequality varies across quantiles, and $Z^*$ is population-invariant and satisfies the transfer principle.
+But it fails diminishing transfer sensitivity and subgroup consistency (Propositions~\ref{prop:dts} and~\ref{prop:subgroup}), so it offers no axiomatic advantage over the Gini, and the split-point version $Z$ should be avoided when populations differ in size (Theorem~\ref{thm:zenga_impossibility}).
+
+\textbf{Percentile ratios are complements, not substitutes.}
+The 90/10 ratio and similar measures are useful descriptive statistics that are robust to outliers and easy to interpret.
+However, they fail most axiomatic properties and should not be used as the sole measure of inequality.
+They are best used alongside a full-distribution measure like a GE index or the Gini.
+
+\textbf{Check the Lorenz curves first, and state the invariance axiom.}
+If one Lorenz curve dominates the other, every relative index satisfying the transfer principle gives the same answer and the choice among them is immaterial.
+If the curves cross, report indices that weight the bottom and the top differently, such as the Atkinson index with $\varepsilon = 2$ and $GE_2$, which disagree in \PipDisGeTwoAtkTwo{} of the PIP comparisons.
+Above all, say whether the conclusion is about relative or absolute inequality: even when Lorenz dominance makes every transfer-principle relative index agree on a change of a Gini point or more, the absolute Gini disagrees in \PipRelAbsOppMaterialDom{} of the PIP comparisons (Section~\ref{sec:empirics}).
+
+% ============================================================
+% SECTION 9: CONCLUSION
+% ============================================================
+\section{Conclusion}\label{sec:conclusion}
+
+We evaluated eight inequality indices against eleven properties and then asked how often the properties decide anything in survey data.
+
+On the theory side, three points bear repeating.
+The maximum number of properties one index can satisfy is ten, and a relative index ($GE_\alpha$, $\alpha < 2$) and an absolute index ($E_\kappa$) both reach it, so the relative--absolute choice cannot be settled by counting axioms (Theorem~\ref{thm:optimality}).
+The GE family remains the only scale-invariant family that decomposes additively (Theorem~\ref{thm:shorrocks}).
+The Zenga indices $Z$ and $Z^*$ satisfy the transfer principle (Zenga's own finite formula $Z_N$ does not), but none of the three satisfies diminishing transfer sensitivity or subgroup consistency, and its split-point form cannot be population-invariant (Theorem~\ref{thm:zenga_impossibility}).
+
+On the empirical side, the transfer principle and the Lorenz ordering it implies settle the direction of change in relative inequality in only \PipShareDom{} of consecutive PIP survey pairs.
+In the remaining pairs, relative indices that all satisfy the transfer principle often disagree, mostly about small changes; once the Gini moves by a point or more, they disagree in \PipTpDisMaterialCross{} of crossing pairs.
+The variance of logarithms, whose failure of the transfer principle is a textbook warning, never contradicted a Lorenz ranking in our \PipNDom{} dominance pairs.
+The relative--absolute split is different in kind: it persists where the transfer principle settles every relative comparison, with the absolute Gini moving against a Lorenz-dominance ranking in \PipRelAbsOppMaterialDom{} of the large changes in which one Lorenz curve dominates.
+A researcher who reports whether inequality rose should therefore say which invariance axiom the answer rests on.
+
+
+\singlespacing
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\clearpage
+\onehalfspacing
+% ============================================================
+% APPENDICES
+% ============================================================
+\appendix
+
+\section{Proofs for Table~\ref{tab:summary}}\label{app:table}
+\setcounter{theorem}{0}
+\renewcommand{\thetheorem}{A.\arabic{theorem}}
 
 % ---- 5.1 Anonymity ----
 \subsection{Anonymity}
@@ -989,30 +1381,15 @@ The indices in the first list satisfy the transfer principle (Proposition~\ref{p
 \end{proof}
 
 \begin{remark}
-For indices that are also scale-invariant (CV, Gini, $GE_\alpha$, $A_\varepsilon$), Lorenz consistency extends to distributions with different means: if $L_{\bfy}(p) \geq L_{\bfz}(p)$ for all $p$, then $I(\bfy) \leq I(\bfz)$, even when $\mu(\bfy) \neq \mu(\bfz)$.
+For indices that are also scale-invariant (CV, Gini, $GE_\alpha$, $A_\varepsilon$), Lorenz consistency extends to distributions with different means: if $\bfy$ Lorenz-dominates $\bfz$, then $I(\bfy) < I(\bfz)$, even when $\mu(\bfy) \neq \mu(\bfz)$.
 The variance, lacking scale invariance, is Lorenz-consistent only for same-mean comparisons.
 \end{remark}
 
-% ============================================================
-% SECTION 6: CHARACTERIZATION AND IMPOSSIBILITY
-% ============================================================
-\section{Characterization and Impossibility Results}\label{sec:characterization}
+\section{Proofs and Remarks for Section~\ref{sec:characterization}}\label{app:proofs}
+\setcounter{theorem}{0}
+\renewcommand{\thetheorem}{B.\arabic{theorem}}
 
-We now present two fundamental results that deepen our understanding of the landscape of inequality measures.
-
-% ---- 6.1 Impossibility ----
-\subsection{The Impossibility of Reconciling Relative and Absolute Views}
-
-\begin{theorem}[Scale--Translation Impossibility]\label{thm:impossibility}
-There exists no inequality index $I : \D \to \R_{\geq 0}$ that simultaneously satisfies normalization (Property~\ref{ax:norm}), continuity (Property~\ref{ax:cont}), scale invariance (Property~\ref{ax:scale}), and translation invariance (Property~\ref{ax:trans}).
-\end{theorem}
-
-\textbf{Intuition.}
-The relative view says that inequality is about ratios: \$10{,}000 vs.\ \$100{,}000 is the same as \$1 vs.\ \$10.
-The absolute view says inequality is about gaps: a \$90{,}000 gap is a \$90{,}000 gap regardless of the income level.
-The two views disagree whenever incomes grow or shrink by more than a uniform amount, and no continuous measure can agree with both.
-
-\begin{proof}
+\begin{proof}[Proof of Theorem~\ref{thm:impossibility}]
 Suppose for contradiction that such an index $I$ exists.
 Consider two-person distributions $\bfy = (1, x)$ for $x > 1$, and define $f(x) = I(1, x)$.
 By normalization, $f(1) = 0$ and $f(x) > 0$ for $x > 1$.
@@ -1045,58 +1422,7 @@ By normalization, $f(1) = 0$ and $c_0 > 0$ (since $f(x) > 0$ for $x > 1$).
 But then $\lim_{x \to 1^+} f(x) = c_0 > 0 \neq f(1) = 0$, contradicting continuity.
 \end{proof}
 
-% ---- 6.2 Characterization of GE ----
-\subsection{The Generalized Entropy Characterization}
-
-\begin{theorem}[Shorrocks Characterization, \citealp{Shorrocks1980}]\label{thm:shorrocks}
-An inequality index $I : \D \to \R_{\geq 0}$ satisfies anonymity (Property~\ref{ax:anon}), normalization (Property~\ref{ax:norm}), continuity (Property~\ref{ax:cont}), population invariance (Property~\ref{ax:pop}), scale invariance (Property~\ref{ax:scale}), and additive decomposability (Property~\ref{ax:decomp}), and has continuous first-order partial derivatives, if and only if $I$ is a positive scalar multiple of $GE_\alpha$ for some $\alpha \in \R$.
-\end{theorem}
-
-\textbf{Intuition.}
-The power of this theorem lies in what it rules out.
-If a researcher wants an inequality measure that is scale-invariant, can compare populations of different sizes, behaves continuously, and can be decomposed into within-group and between-group components, then the \emph{only} options are the GE indices.
-The Atkinson index and the variance of logarithms, which satisfy every other condition, are therefore not additively decomposable.
-The Gini is excluded as well (Proposition~\ref{prop:decomp}), although it falls outside the theorem because it is not differentiable where incomes tie.
-
-We state this result without proof; the full argument is in \citet{Shorrocks1980}.
-The key step is that additive decomposability and scale invariance force the index to satisfy the functional equation $I(\bfy) = \sum_k w_k(\mu_k, n_k, \mu, n)\,I(\bfy_k) + I(\mu_1\bfone_1, \ldots, \mu_K\bfone_K)$ with specific weight structure.
-The differentiability assumption rules out irregular solutions of the resulting functional equations.
-
-\begin{remark}[Dropping One Axiom]\label{rem:independence}
-Four of the axioms in Theorem~\ref{thm:shorrocks} cannot be dropped without admitting indices outside the GE family.
-\begin{enumerate}[label=(\roman*)]
-    \item \emph{Normalization.}
-    The index $I \equiv 0$ satisfies every other axiom but is zero for unequal distributions.
-
-    \item \emph{Population Invariance.}
-    $I_n(\bfy) = \frac{n-1}{n}\,GE_1(\bfy)$ satisfies the other axioms, with decomposition weights rescaled by $\frac{n-1}{n} \big/ \frac{n_k - 1}{n_k}$.
-    But $I_2(1,3) = \frac{1}{2} \cdot 0.1308 = 0.0654$ while $I_4(1,1,3,3) = \frac{3}{4} \cdot 0.1308 = 0.0981$.
-
-    \item \emph{Scale Invariance.}
-    The variance satisfies the other axioms but $\operatorname{Var}(2,6) = 4 \neq 1 = \operatorname{Var}(1,3)$.
-
-    \item \emph{Additive Decomposability.}
-    The Atkinson index $A_\varepsilon$ satisfies the other axioms, including differentiability, and is not a multiple of any $GE_\alpha$, so by the theorem it is not additively decomposable.
-\end{enumerate}
-\end{remark}
-
-% ---- 6.3 The Lorenz Equivalence ----
-\subsection{The Transfer--Lorenz Equivalence}
-
-\begin{theorem}[Dasgupta--Sen--Starrett, \citealp{DasGupta1973}]\label{thm:dss}
-For an anonymous inequality index $I$, the following are equivalent:
-\begin{enumerate}[label=(\roman*)]
-    \item $I$ satisfies the Pigou-Dalton transfer principle (Property~\ref{ax:pd}).
-    \item $I$ is Lorenz-consistent (Property~\ref{ax:lorenz}).
-\end{enumerate}
-\end{theorem}
-
-\textbf{Intuition.}
-This theorem tells us that the transfer principle and Lorenz consistency are really two ways of saying the same thing.
-The transfer principle is a ``local'' condition (one pairwise transfer), while Lorenz consistency is a ``global'' condition (the entire curve lies above).
-The bridge between them is the Hardy--Littlewood--P\'olya theorem, which shows that any Lorenz improvement can be decomposed into elementary progressive transfers.
-
-\begin{proof}
+\begin{proof}[Proof of Theorem~\ref{thm:dss}]
 \textbf{(i) $\Rightarrow$ (ii).}
 Suppose $\bfy$ Lorenz-dominates $\bfz$ (with the same mean and population size).
 By the Hardy--Littlewood--P\'olya theorem \citep{Hardy1934}, there exists a finite sequence of progressive transfers transforming $\bfz$ into $\bfy$.
@@ -1107,97 +1433,7 @@ If $\bfy$ is obtained from $\bfz$ by a progressive transfer, then $L_{\bfy}(p) \
 So $\bfy$ Lorenz-dominates $\bfz$, and Lorenz consistency gives $I(\bfy) < I(\bfz)$.
 \end{proof}
 
-% ---- 6.4 Compatibility ----
-\subsection{Which Properties Can Coexist?}\label{sec:compatibility}
-
-The results of this section reveal not only individual properties of specific indices, but a deeper structure: some pairs of desirable properties are logically incompatible, while others are not only compatible but mutually reinforcing.
-We organise these relationships in Proposition~\ref{prop:compatibility} and Table~\ref{tab:compatibility}.
-
-\begin{proposition}[Property Compatibility]\label{prop:compatibility}
-Among anonymous, normalised, continuous, population-invariant inequality indices:
-\begin{enumerate}[label=(\roman*)]
-    \item \textbf{Scale invariance and translation invariance are incompatible.}
-    No such index satisfies both simultaneously (Theorem~\ref{thm:impossibility}).
-
-    \item \textbf{Additive decomposability and scale invariance jointly force the GE family.}
-    Any index satisfying scale invariance and additive decomposability (in addition to the four standard axioms) must be a positive multiple of $GE_\alpha$ for some $\alpha$ (Theorem~\ref{thm:shorrocks}).
-    For example, the Gini is scale-invariant but not decomposable, and the variance is decomposable but not scale-invariant.
-
-    \item \textbf{Additive decomposability implies subgroup consistency.}
-    Any additively decomposable index satisfying the transfer principle is subgroup-consistent.
-    \begin{proof}
-    Let $I$ be additively decomposable with decomposition~\eqref{eq:decomp}, and suppose within-group $k$ inequality increases: $I(\bfy'_k) > I(\bfy_k)$, with $\mu(\bfy'_k) = \mu(\bfy_k)$ and all other groups unchanged.
-    Since the weights $w_k$ depend only on subgroup sizes and means, all weights are unchanged.
-    The between-group term is also unchanged (group means are unchanged).
-    Therefore
-    \[
-        I(\bfy') = \sum_{j \neq k} w_j I(\bfy_j) + w_k I(\bfy'_k) + I_{\text{between}} > \sum_{j} w_j I(\bfy_j) + I_{\text{between}} = I(\bfy),
-    \]
-    provided $w_k > 0$.
-    The weights are indeed positive: a progressive transfer inside group $k$ changes neither the group means nor the other groups, so by~\eqref{eq:decomp} it changes $I$ by $w_k$ times the change in $I(\bfy_k)$; the transfer principle requires both changes to be negative, so $w_k > 0$.
-    \end{proof}
-    The converse does not hold: $A_\varepsilon$ is subgroup-consistent but not additively decomposable.
-
-    \item \textbf{The transfer principle and Lorenz consistency are equivalent.}
-    (Theorem~\ref{thm:dss}.)
-    Any index satisfying one satisfies the other; they cannot be separated.
-
-    \item \textbf{Translation invariance is compatible with the transfer principle, diminishing transfer sensitivity, and additive decomposability.}
-    The exponential absolute index $E_\kappa$ of Theorem~\ref{thm:optimality} satisfies all three.
-    What translation invariance rules out is scale invariance, by (i).
-\end{enumerate}
-\end{proposition}
-
-\begin{table}[H]
-\centering
-\caption{Pairwise Compatibility of Key Properties}
-\label{tab:compatibility}
-\small
-\begin{tabular}{l c c c c c}
-\toprule
- & Scale Inv. & Trans.\ Inv. & Transfer Pr. & Add.\ Decomp. & Subgr.\ Cons. \\
-\midrule
-Scale Inv.       & ---  & \textbf{NO}  & Yes & Yes$^*$ & Yes \\
-Trans.\ Inv.     & \textbf{NO} & --- & Yes$^\dagger$ & Yes$^\dagger$ & Yes$^\dagger$ \\
-Transfer Pr.     & Yes  & Yes$^\dagger$ & --- & Yes & Yes \\
-Add.\ Decomp.    & Yes$^*$ & Yes$^\dagger$ & Yes & --- & Yes \\
-Subgr.\ Cons.    & Yes  & Yes$^\dagger$ & Yes & Yes & --- \\
-\bottomrule
-\end{tabular}
-\vspace{0.5em}
-
-\footnotesize
-Notes: ``Yes'' = jointly satisfiable by at least one index; ``\textbf{NO}'' = incompatible for any continuous normalised index (Theorem~\ref{thm:impossibility}).
-$^*$Scale invariance + additive decomposability forces the GE family (Theorem~\ref{thm:shorrocks}).
-$^\dagger$Attained by the variance and by the exponential absolute index $E_\kappa$ (Theorem~\ref{thm:optimality}); translation invariance is incompatible only with scale invariance.
-\end{table}
-
-The compatibility structure has a direct practical implication.
-A researcher who requires decomposability for structural analysis effectively has no choice among scale-invariant measures: the GE family is uniquely determined by Theorem~\ref{thm:shorrocks}.
-A researcher who needs only subgroup consistency has a slightly wider menu: the Atkinson index also qualifies, but the Gini and the Zenga indices do not (Proposition~\ref{prop:subgroup}).
-A researcher who adopts the absolute view (translation invariance) gives up scale invariance but nothing else: the exponential index $E_\kappa$ is decomposable and bottom-sensitive, and the Kolm index is its ordinal equivalent.
-
-% ---- 6.5 Split-Point Impossibility ----
-\subsection{Impossibility for Split-Point Indices}\label{sec:zenga_impossibility}
-
-The split-point average $Z$ fails population invariance (Section~\ref{sec:zenga}).
-One might hope that a different choice of pointwise function could fix this.
-The following theorem shows that it cannot: \emph{any} index that averages a continuous function of the conditional-mean ratios over the $n - 1$ split points with equal weights must be trivial if it is to satisfy population invariance.
-
-\begin{theorem}[Split-Point Impossibility]\label{thm:zenga_impossibility}
-Let $f : (0, \infty) \to \R$ be continuous with $f(1) = 0$, and define
-\begin{equation}\label{eq:zenga_type}
-I_f(\bfy) = \frac{1}{n-1}\sum_{i=1}^{n-1} f\!\left(\frac{\bar{y}_i^-}{\bar{y}_i^+}\right).
-\end{equation}
-If $I_f$ satisfies population invariance, then $f \equiv 0$ on $(0, 1]$, so $I_f$ is identically zero.
-\end{theorem}
-
-\textbf{Intuition.}
-Population replication creates new split points that ``interpolate'' between the original ones.
-The averaging denominator changes from $n-1$ to $kn-1$, and the new pointwise values at the interpolated split points cannot exactly compensate.
-The proof shows that the functional equation generated by 2-fold replication forces $f$ to be its own midpoint average on orbits that converge to the fixed point $r = 1$; continuity and $f(1) = 0$ then force $f \equiv 0$.
-
-\begin{proof}
+\begin{proof}[Proof of Theorem~\ref{thm:zenga_impossibility}]
 Consider $\bfy = (a, b)$ with $0 < a < b$ and $r = a/b \in (0, 1)$.
 Then $I_f(a, b) = f(r)$.
 The 2-fold replication $\bfy^{(2)} = (a, a, b, b)$ has three split points with ratios
@@ -1223,35 +1459,7 @@ Since $\delta > 0$ was arbitrary, $f \equiv 0$ on $(0, 1]$.
 Every ratio $\bar{y}^{-}_i/\bar{y}^{+}_i$ of sorted incomes lies in $(0, 1]$, so $I_f$ is identically zero; the values of $f$ above $1$ never enter the index.
 \end{proof}
 
-\begin{remark}
-The theorem locates the problem in the equal weights, and the two other versions of Definition~\ref{def:integral_zenga} escape it in different ways.
-Zenga's finite-population index $Z_N$ weights each distinct income value by its population share, which restores population invariance but makes the index discontinuous where incomes tie.
-The empirical index $Z^*$ integrates over all $p \in (0, 1)$; since the empirical quantile function is invariant under replication, it is population-invariant and continuous.
-\end{remark}
-
-% ---- 6.6 Axiomatic Optimality ----
-\subsection{Axiomatic Optimality Bounds}\label{sec:optimality}
-
-How many of the eleven properties can one index satisfy?
-The answer is ten, and it is the same for relative and absolute indices.
-For the absolute side we need the exponential index
-\begin{equation}\label{eq:expo}
-E_\kappa(\bfy) = \frac{1}{n}\sum_{i=1}^n e^{\kappa(\mu - y_i)} - 1, \qquad \kappa > 0,
-\end{equation}
-which is an increasing transformation of the Kolm index $K_\kappa(\bfy) = \kappa^{-1}\ln[1 + E_\kappa(\bfy)]$ \citep{Kolm1976a}.
-$E_\kappa$ stands to $K_\kappa$ as $GE_{1-\varepsilon}$ stands to $A_\varepsilon$: the two rank distributions identically, but only the first is additively decomposable.
-The parameter $\kappa$ is measured in inverse income units, so it has to be chosen for the currency and period at hand.
-
-\begin{theorem}[Axiomatic Optimality]\label{thm:optimality}
-Among the eleven properties of Section~\ref{sec:properties}:
-\begin{enumerate}[label=(\roman*)]
-    \item No inequality index satisfies all eleven.
-    \item $GE_\alpha$ with $\alpha < 2$ satisfies every property except translation invariance.
-    \item $E_\kappa$ with $\kappa > 0$ satisfies every property except scale invariance.
-\end{enumerate}
-\end{theorem}
-
-\begin{proof}
+\begin{proof}[Proof of Theorem~\ref{thm:optimality}]
 Part (i) is Theorem~\ref{thm:impossibility}.
 Part (ii) collects Propositions~\ref{prop:anon}--\ref{prop:lorenz} for $GE_\alpha$: it is anonymous, normalized, continuous, population-invariant, and scale-invariant; it satisfies the transfer principle and hence Lorenz consistency (Theorem~\ref{thm:dss}); it satisfies DTS for $\alpha < 2$ (Proposition~\ref{prop:dts}); and it is additively decomposable and therefore subgroup-consistent.
 
@@ -1273,202 +1481,24 @@ Subgroup consistency then follows from Proposition~\ref{prop:compatibility}(iii)
 $E_\kappa$ is not scale-invariant: $E_\kappa(1, 3) \neq E_\kappa(2, 6)$ for every $\kappa > 0$.
 \end{proof}
 
-\textbf{Intuition.}
-The variance, the best-known decomposable absolute index, treats transfers at all income levels alike, which suggests that absolute measures cannot be bottom-sensitive.
-That is a property of the variance, not of translation invariance.
-The absolute decomposable indices are exactly the variance and the exponential family \citep{Chakravarty1998,Bosmans2010}, just as the relative decomposable indices are the GE family, and in each class the members with the right curvature are bottom-sensitive.
-The choice between relative and absolute measurement is therefore a choice about which invariance one believes, not a choice between a better and a worse axiomatic package.
-Section~\ref{sec:empirics} shows that it is also the choice with the largest consequences in practice.
+\begin{remark}[Dropping One Axiom]\label{rem:independence}
+Four of the axioms in Theorem~\ref{thm:shorrocks} cannot be dropped without admitting indices outside the GE family.
+\begin{enumerate}[label=(\roman*)]
+    \item \emph{Normalization.}
+    The index $I \equiv 0$ satisfies every other axiom but is zero for unequal distributions.
 
-% ============================================================
-% SECTION: EMPIRICS
-% ============================================================
-\section{Do the Axioms Bind? Evidence from Survey Data}\label{sec:empirics}
+    \item \emph{Population Invariance.}
+    $I_n(\bfy) = \frac{n-1}{n}\,GE_1(\bfy)$ satisfies the other axioms, with decomposition weights rescaled by $\frac{n-1}{n} \big/ \frac{n_k - 1}{n_k}$.
+    But $I_2(1,3) = \frac{1}{2} \cdot 0.1308 = 0.0654$ while $I_4(1,1,3,3) = \frac{3}{4} \cdot 0.1308 = 0.0981$.
 
-The previous sections say which indices satisfy which properties.
-They do not say how often the differences matter.
-Two relative indices that both satisfy the transfer principle must agree whenever one Lorenz curve dominates another, and can disagree only when the curves cross.
-How often curves cross, and how often the indices then disagree, is an empirical question.
-\citet{Atkinson1970} posed it for 12 countries and \citet{Figini2000} for 69 distributions from the Luxembourg Income Study; we answer it for national income and consumption distributions from \PipCountries{} countries over six decades, and we add the comparison between relative and absolute indices.
+    \item \emph{Scale Invariance.}
+    The variance satisfies the other axioms but $\operatorname{Var}(2,6) = 4 \neq 1 = \operatorname{Var}(1,3)$.
 
-\subsection{Data and Design}
+    \item \emph{Additive Decomposability.}
+    The Atkinson index $A_\varepsilon$ satisfies the other axioms, including differentiability, and is not a multiple of any $GE_\alpha$, so by Theorem~\ref{thm:shorrocks} it is not additively decomposable.
+\end{enumerate}
+\end{remark}
 
-We use the percentile file of the World Bank's Poverty and Inequality Platform \citep{WorldBankPIP2026,WorldBankPIPPercentiles2026}.
-For each country and survey year it reports the mean income or consumption of each of 100 equal-population groups, in 2017 PPP dollars per day.
-The file covers \PipDistributions{} distributions from \PipDistCountries{} countries between \PipYearMin{} and \PipYearMax{}.
-Most are computed from household microdata; the rest are reconstructed by the platform from grouped data or, for a few countries such as China, synthesised from separate urban and rural distributions.
-We treat each distribution as a population of 100 equally weighted incomes and compute every index of Section~\ref{sec:indices} on it, with the 90/10 ratio defined as in~\eqref{eq:pq}, the ratio of the 90th to the 10th percentile group mean.
-We also compute three absolute indices: the standard deviation, the absolute Gini $\mu G$ (half the mean absolute difference), and the Kolm index with $\kappa = 0.1$ per dollar-day.
-The theorems apply to any finite population, so they apply exactly to these 100-point distributions.
-Grouping into percentiles removes inequality within each percentile, which lowers every index slightly.
-The loss is small: our Gini differs from the platform's official Gini, computed from the underlying data, by at most \PipGiniMaxDiff{}, and our MLD differs from the official MLD by at most \PipMldMaxDiff{}.
 
-The platform groups surveys into \emph{comparable spells}, within which it judges the welfare concept, survey design, and coverage to be comparable.
-We compare each national survey with the next survey in the same spell, which yields \PipPairs{} pairs from \PipCountries{} countries.
-For each pair we record the sign of the change in every index and the relationship between the two Lorenz curves at the 99 interior percentiles: dominance (no crossing), a single crossing, or multiple crossings.
-Several indices rank distributions identically---the CV and $GE_2$, $A_1$ and the MLD, $A_2$ and $GE_{-1}$, $A_{0.5}$ and $GE_{0.5}$---so when we ask whether ``the indices'' agree we use one index per ordering: the Gini, $Z^*$, $GE_{-1}$, the MLD, $GE_{0.5}$, the Theil index, and $GE_2$.
-These seven satisfy the transfer principle; the four GE indices with $\alpha < 2$ also satisfy diminishing transfer sensitivity.
-The platform does not publish standard errors, so we cannot test whether a small change is statistically meaningful; instead we report results by the size of the change and with a noise screen described below.
-
-\subsection{What the Theorems Predict}
-
-When one Lorenz curve dominates, Theorem~\ref{thm:dss} requires every scale-invariant index that satisfies the transfer principle to move in the same direction (scale invariance lets the theorem compare distributions with different means).
-Dominance holds in \PipShareDom{} of pairs (\PipNDom{} pairs), and in every one of them all seven indices move in the direction the dominance implies.
-The two indices that violate the transfer principle behave differently.
-The 90/10 ratio moves against the Lorenz ranking in \PipPNinetyViol{} of the \PipNDom{} dominance pairs.
-The variance of logarithms does so in \PipVlViol{}: its violations of the transfer principle arise from transfers among incomes well above the geometric mean, as in the counterexample of Proposition~\ref{prop:transfer}, and in these data such changes never outweighed the rest of the change in the distribution.
-
-When the curves cross exactly once, \citet{Shorrocks1987} show that every relative index satisfying the transfer principle and their notion of transfer sensitivity ranks the distribution whose curve is higher at the bottom as more equal, provided that distribution also has the lower coefficient of variation.
-Their transfer sensitivity is defined through composite, variance-preserving transfers rather than our pairwise Property~\ref{ax:dts}, but $GE_\alpha$ with $\alpha < 2$ satisfies both.
-The condition holds in \PipNSF{} single-crossing pairs, and the four transfer-sensitive indices contradict the prediction in \PipSFViol{} of them.
-$GE_2$ agrees by construction, since the condition selects on the CV; the Gini and $Z^*$, which carry no such guarantee, also never contradict the prediction, so these pairs do not discriminate among indices.
-
-\subsection{How Often Relative Indices Disagree}
-
-Lorenz curves cross in \PipShareCross{} of pairs: \PipShareSingle{} cross once and \PipShareMulti{} cross more than once.
-This is in line with earlier evidence.
-\citet{Atkinson1970} found crossings in 50 of 66 pairwise comparisons of 12 countries, and \citet{Figini2000} notes that the share depends on how finely the curves are compared, from 25 percent with deciles \citep{Bishop1991} to 80 percent with 100 points \citep{Buhmann1988}.
-Using only the nine decile ordinates, our curves cross in \PipShareCrossDecile{} of pairs, because many crossings occur in the tails, where the curves are close.
-Dominance at the decile level does not, however, guarantee that the indices agree; the theorems require dominance at every point of the distribution being measured.
-
-When the curves cross, the seven indices agree on the direction of change in only \PipTpAgreeCross{} of pairs, and the four transfer-sensitive indices agree in \PipDtsAgreeCross{}.
-Most of this disagreement concerns small changes.
-Figure~\ref{fig:pip_size} sorts pairs by the absolute change in the Gini.
-When the Gini moves by less than a quarter of a point, the indices disagree in most single-crossing pairs; when it moves by more than two points, they disagree in about one pair in ten.
-Among the \PipNMaterialCross{} crossing pairs in which the Gini moves by at least one point, they disagree in \PipTpDisMaterialCross{}.
-Because the Gini is itself one of the indices, we also use a screen that treats the indices symmetrically: in each pair we compare the signs only of those indices whose log change exceeds that index's own median absolute log change across all pairs.
-Among the \PipNBigCross{} crossing pairs with at least two such indices, they agree in \PipTpAgreeBigCross{}.
-Without standard errors we cannot say how many of the remaining disagreements reflect sampling noise.
-The results are the same if we drop the distributions that are not computed from microdata: in the \PipNMicroPairs{} pairs of microdata surveys, the curves cross in \PipShareCrossMicro{} of pairs and the seven indices agree in \PipTpAgreeCrossMicro{} of crossing pairs.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.85\textwidth]{../figures/pip_by_size.pdf}
-\caption{Disagreement among transfer-principle indices, by size of change}
-\label{fig:pip_size}
-\begin{minipage}{0.85\textwidth}
-\footnotesize
-Notes: Share of consecutive comparable PIP survey pairs in which the seven transfer-principle indices do not all move in the same direction, by Lorenz relationship and by the absolute change in the Gini.
-Under Lorenz dominance the share is zero in every bin, as Theorem~\ref{thm:dss} requires.
-\end{minipage}
-\end{figure}
-
-Which indices disagree is predictable from their sensitivities (Figure~\ref{fig:pip_heat}).
-Indices with similar weighting rarely conflict: the Gini and the MLD move in opposite directions in \PipDisGiniMld{} of pairs, and the Gini and $Z^*$ in \PipDisGiniZenga{}.
-Indices that weight opposite ends of the distribution conflict often: $GE_2$, which is sensitive to the top, and the Atkinson index with $\varepsilon = 2$, which is sensitive to the bottom, disagree in \PipDisGeTwoAtkTwo{} of pairs.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=0.72\textwidth]{../figures/pip_disagreement.pdf}
-\caption{Pairwise disagreement on the direction of change}
-\label{fig:pip_heat}
-\begin{minipage}{0.72\textwidth}
-\footnotesize
-Notes: Each cell is the percentage of the \PipPairs{} survey pairs in which the two indices change in opposite directions.
-\end{minipage}
-\end{figure}
-
-\subsection{Relative Versus Absolute}
-
-The Gini and the absolute Gini move in opposite directions in \PipDisGiniAbs{} of pairs, a rate matched among relative indices only by pairs that weight opposite tails, such as $GE_2$ and the 90/10 ratio (\PipDisGeTwoPNinety{}).
-The conflict has a simple arithmetic source.
-Since $\Delta \ln(\mu G) = \Delta \ln \mu + \Delta \ln G$, the absolute Gini rises whenever growth in the mean exceeds the proportional fall in the Gini.
-In the PIP pairs the median absolute change in log mean income is \PipMedGrowth{} percent, against \PipMedDlnGini{} percent for the log Gini, and growth is the larger of the two in \PipShareGrowthExceeds{} of pairs.
-Hence, in \PipOppGiniDownAbsUp{} of the conflicts relative inequality falls while absolute inequality rises.
-Among the \PipNGrowth{} pairs in which mean income rose, the Gini fell in \PipGiniFellGrowth{}, and in \PipAbsUpGivenGiniDownGrowth{} of those the absolute Gini rose.
-Over the \PipLongN{} comparable spells that span at least ten years, the Gini fell with rising mean income in \PipLongNGiniDownGrowth{} spells, and the absolute Gini rose in \PipLongAbsUpGivenGiniDown{} of them.
-The choice of absolute index matters little: the Kolm index moves in the same direction as the absolute Gini in \PipKolmAgree{} of pairs and the standard deviation in \PipSdAgree{}, although the Kolm index depends on the unit of $\kappa$, which has to be fixed across countries whose mean incomes differ by a factor of more than \PipIncomeRange{}.
-
-The consequence is that Lorenz dominance, which settles the comparison for every relative index satisfying the transfer principle, does not settle the absolute one.
-Among the \PipNMaterialDom{} pairs in which the Gini moves by at least one point and one Lorenz curve dominates, the seven relative indices agree by Theorem~\ref{thm:dss}, but the absolute Gini moves the other way in \PipRelAbsOppMaterialDom{}.
-In the \PipNMaterialCross{} crossing pairs with changes of the same size, the relative and absolute Gini conflict in \PipRelAbsOppMaterialCross{}, about as often as the relative indices conflict among themselves (\PipTpDisMaterialCross{}).
-Taking all \PipNMaterial{} large changes together, the relative and absolute Gini conflict in \PipRelAbsOppMaterial{} of pairs and the relative indices in \PipTpDisMaterial{}.
-Figure~\ref{fig:pip_countries} shows four cases.
-In China between \PipChinaYears{}, the Gini of consumption rose from \PipChinaGiniA{} to \PipChinaGiniB{}, while mean consumption grew by a factor of \PipChinaMeanRatio{} and the absolute Gini by a factor of \PipChinaAbsRatio{}.
-In Brazil between \PipBrazilYears{}, the last decade of the spell in the figure, the Gini fell from \PipBrazilGiniA{} to \PipBrazilGiniB{}, yet the absolute Gini rose by a factor of \PipBrazilAbsRatio{} because mean income grew faster than relative inequality fell.
-In the United States and the United Kingdom the Gini ends within about ten percent of its starting value while the absolute Gini rises by up to a factor of two in the United States.
-The same disagreement drives the debate over global inequality \citep{Ravallion2004,Atkinson2010,NinoZarazua2017}; the PIP data quantify it for national trends in \PipCountries{} countries.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{../figures/pip_countries.pdf}
-\caption{Relative and absolute indices over time in four countries}
-\label{fig:pip_countries}
-\begin{minipage}{\textwidth}
-\footnotesize
-Notes: Each index is set to 100 in the first survey of one long comparable PIP spell per country. The absolute Gini is $\mu G$ in 2017 PPP dollars per day. China's national distributions are synthesised by the platform from urban and rural surveys.
-\end{minipage}
-\end{figure}
-
-% ============================================================
-% SECTION 8: PRACTICAL GUIDANCE
-% ============================================================
-\section{Practical Guidance for Applied Researchers}\label{sec:guidance}
-
-The results of the previous sections reveal a landscape of tradeoffs.
-No single index satisfies all desirable properties, and the choice of measure should be guided by the research question.
-We offer the following practical recommendations.
-
-\textbf{If decomposability matters, use the GE family.}
-For any study that requires decomposing inequality into within-group and between-group components---for example, decomposing wage inequality by education, gender, or race---the Generalized Entropy family is the only scale-invariant option (Theorem~\ref{thm:shorrocks}).
-Within the GE family, the choice of $\alpha$ should reflect the researcher's judgment about which part of the distribution matters most:
-\begin{itemize}
-    \item $\alpha = 0$ (MLD): more sensitive to changes at the bottom than the Theil ($\alpha < 0$ is more so). Suitable for poverty-focused analyses.
-    \item $\alpha = 1$ (Theil): balanced sensitivity; weights by income shares in decomposition. Suitable for general-purpose analysis.
-    \item $\alpha = 2$ (half-squared CV): more sensitive to changes at the top ($\alpha > 2$ is more so). Suitable for analyses focused on top-income dynamics.
-\end{itemize}
-
-\textbf{If welfare-theoretic foundations matter, use the Atkinson index.}
-The Atkinson index has a direct welfare interpretation through the equally distributed equivalent income.
-It satisfies all properties except translation invariance and additive decomposability, and it satisfies subgroup consistency, which is often sufficient for practical purposes.
-The parameter $\varepsilon$ has a clear interpretation as inequality aversion, making results transparent and facilitating sensitivity analysis.
-
-\textbf{If simplicity and communication matter, the Gini is defensible---with caveats.}
-The Gini coefficient is intuitive, bounded between 0 and 1, and has a geometric interpretation via the Lorenz curve.
-It satisfies the transfer principle and Lorenz consistency.
-However, researchers should be aware of its limitations: it cannot be decomposed additively, it fails subgroup consistency, and its transfer sensitivity depends on ranks rather than income levels.
-It is a reasonable summary statistic but a poor tool for decomposition.
-
-\textbf{Prefer the MLD to the variance of logarithms.}
-The VL fails the Pigou-Dalton transfer principle, so it can rise after a transfer from rich to poor.
-In the PIP data this failure never reversed a Lorenz ranking (Section~\ref{sec:empirics}), so VL trends for national distributions are unlikely to be misleading on this account; the risk is greater for distributions with long upper tails, where transfers among top incomes carry more weight.
-The MLD ($GE_0$) is also built on logarithms, satisfies the transfer principle, and decomposes additively, so it is the natural replacement.
-
-\textbf{Treat the Zenga index as a descriptive device.}
-The Zenga curve $1 - M^{-}(p)/M^{+}(p)$ shows how inequality varies across quantiles, and $Z^*$ is population-invariant and satisfies the transfer principle.
-But it fails diminishing transfer sensitivity and subgroup consistency (Propositions~\ref{prop:dts} and~\ref{prop:subgroup}), so it offers no axiomatic advantage over the Gini, and the split-point version $Z$ should be avoided when populations differ in size (Theorem~\ref{thm:zenga_impossibility}).
-
-\textbf{Percentile ratios are complements, not substitutes.}
-The 90/10 ratio and similar measures are useful descriptive statistics that are robust to outliers and easy to interpret.
-However, they fail most axiomatic properties and should not be used as the sole measure of inequality.
-They are best used alongside a full-distribution measure like a GE index or the Gini.
-
-\textbf{Check the Lorenz curves first, and state the invariance axiom.}
-If one Lorenz curve dominates the other, every relative index satisfying the transfer principle gives the same answer and the choice among them is immaterial.
-If the curves cross, report indices that weight the bottom and the top differently, such as the Atkinson index with $\varepsilon = 2$ and $GE_2$, which disagree in \PipDisGeTwoAtkTwo{} of the PIP comparisons.
-Above all, say whether the conclusion is about relative or absolute inequality: even when Lorenz dominance makes every transfer-principle relative index agree on a change of a Gini point or more, the absolute Gini disagrees in \PipRelAbsOppMaterialDom{} of the PIP comparisons (Section~\ref{sec:empirics}).
-
-% ============================================================
-% SECTION 9: CONCLUSION
-% ============================================================
-\section{Conclusion}\label{sec:conclusion}
-
-We evaluated eight inequality indices against eleven properties and then asked how often the properties decide anything in survey data.
-
-On the theory side, three points bear repeating.
-The maximum number of properties one index can satisfy is ten, and a relative index ($GE_\alpha$, $\alpha < 2$) and an absolute index ($E_\kappa$) both reach it, so the relative--absolute choice cannot be settled by counting axioms (Theorem~\ref{thm:optimality}).
-The GE family remains the only scale-invariant family that decomposes additively (Theorem~\ref{thm:shorrocks}).
-The Zenga indices $Z$ and $Z^*$ satisfy the transfer principle (Zenga's own finite formula $Z_N$ does not), but none of the three satisfies diminishing transfer sensitivity or subgroup consistency, and its split-point form cannot be population-invariant (Theorem~\ref{thm:zenga_impossibility}).
-
-On the empirical side, the transfer principle and the Lorenz ordering it implies settle the direction of change in relative inequality in only \PipShareDom{} of consecutive PIP survey pairs.
-In the remaining pairs, relative indices that all satisfy the transfer principle often disagree, mostly about small changes; once the Gini moves by a point or more, they disagree in \PipTpDisMaterialCross{} of crossing pairs.
-The variance of logarithms, whose failure of the transfer principle is a textbook warning, never contradicted a Lorenz ranking in our \PipNDom{} dominance pairs.
-The relative--absolute split is different in kind: it persists where the transfer principle settles every relative comparison, with the absolute Gini moving against a Lorenz-dominance ranking in \PipRelAbsOppMaterialDom{} of the large changes in which one Lorenz curve dominates.
-A researcher who reports whether inequality rose should therefore say which invariance axiom the answer rests on.
-
-\singlespacing
-
-\bibliographystyle{plainnat}
-\bibliography{references}
 
 \end{document}
