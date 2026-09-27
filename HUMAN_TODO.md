@@ -83,3 +83,21 @@ reorders, or ticks items. Close items as `**Done YYYY-MM-DD (who)**: ...`.
       `submission/main_submission.pdf`, `submission/source.zip`, and
       `submission/cover_letter.pdf`; declare funding/competing interests in the
       form as in the paper.
+
+## Reproducibility flakiness noticed while working on AGENT_TODO item 1 (2026-09-27)
+
+- [ ] **`make check` regenerates several tracked files with non-numeric byte
+      churn even with no code change.** On this run's environment (pinned
+      `code/requirements.txt` versions), a bare `python3 pip_panel.py` reproduces
+      `data/processed/pip_indices.csv` byte-for-byte across repeated runs, but
+      differs from the file already committed to git at the ~15th significant
+      digit in some cells (e.g. `atk1`); `figures/lorenz_curves.pdf`,
+      `transfer_sensitivity.pdf`, `vl_counterexample.pdf`, the three
+      `pip_*.pdf` figures, and `paper/inequality_indices.pdf` also come back
+      byte-different (same size, same visible content) despite
+      `SOURCE_DATE_EPOCH` being pinned. None of this affects any macro in
+      `paper/pip_macros.tex` (the only file `make reproduce` diffs), so it did
+      not block this PR, but it means `git status` is never clean after a full
+      `make check` run and a future agent could mistake the churn for a real
+      change. Worth root-causing (likely BLAS threading or a font-subsetting
+      order that SOURCE_DATE_EPOCH does not pin) or documented as expected.
