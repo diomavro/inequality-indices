@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Submission Metadata
 
 **Author:** Diomides Mavroyiannis; Noemie Mavroyiannis
-**Affiliation:** Milestone Institute, Budapest, Hungary (Diomides)
+**Affiliation:** Milestone Institute, Budapest, Hungary (Diomides); Corvinus University of Budapest, Hungary (Noemie)
 **Email:** dmavroyiannis8@gmail.com
 **Target Journal:** Journal of Economic Inequality (fallback: Review of Income and Wealth)
 **Funding:** None
