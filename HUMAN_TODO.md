@@ -66,8 +66,8 @@ reorders, or ticks items. Close items as `**Done YYYY-MM-DD (who)**: ...`.
 
 ## Submitting to the Journal of Economic Inequality (2026-09-26)
 
-- [ ] **Add Noemie's affiliation** to the author block in
-      `paper/inequality_indices.tex` (only Dio's is there).
+- [x] **Done 2026-09-27 (Claude, from Dio)**: Noemie's affiliation (Corvinus
+      University of Budapest) added to the author block.
 - [ ] **Decide the AI-use statement.** Springer asks authors to document use of
       AI tools beyond copy-editing (in the methods section). Much of this
       revision, the data pipeline, and the checks were produced with Claude; a
