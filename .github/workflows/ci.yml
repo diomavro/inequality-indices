@@ -68,6 +68,50 @@ jobs:
             exit 1
           fi
 
+  # The constitution stays human-curated (tail-lab's constitution-guard): an
+  # agent/* PR that edits it, or removes an assertion that checks the paper's
+  # theorems against the data, fails here, so automerge cannot land it. Human
+  # PRs are unaffected. Grep-able guards should not cost a model call.
+  constitution-guard:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Block autonomous edits to the constitution
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [[ "$HEAD_REF" != agent/* ]]; then
+            echo "Not an agent PR (head='$HEAD_REF'); guard not applicable."
+            exit 0
+          fi
+          changed=$(git diff --name-only "$BASE_SHA...HEAD")
+          echo "Changed files:"; echo "$changed"
+          # Workflows, mission, README, raw data, and anything that can switch
+          # off the gate: makefiles (a lowercase `makefile` or `GNUmakefile`
+          # overrides `Makefile`), latexmkrc (runs Perl), lint config, pins.
+          if echo "$changed" | grep -qiE '^\.github/|^docs/AGENT_MISSION\.md$|^README\.md$|^data/raw/|(^|/)(gnu)?makefile$|(^|/)\.?latexmkrc$|(^|/)(\.?ruff|pyproject)\.toml$|^code/requirements\.txt$'; then
+            echo "::error::This agent PR edits the constitution (workflows, AGENT_MISSION.md, README.md, data/raw/, build or lint config). A human must review and merge it."
+            exit 1
+          fi
+          # Invariant 3: the scripts that check theorems against the data may
+          # gain assertions but never lose them.
+          for f in code/verify_corrections.py code/pip_disagreement.py; do
+            before=$(git show "$BASE_SHA:$f" 2>/dev/null | grep -cE '^\s*assert ' || true)
+            after=$(grep -cE '^\s*assert ' "$f" 2>/dev/null || true)
+            echo "$f: assertions $before -> $after"
+            if [ "${after:-0}" -lt "${before:-0}" ]; then
+              echo "::error::$f lost assertions ($before -> $after); an agent may not weaken the checks."
+              exit 1
+            fi
+          done
+          echo "OK: constitution untouched, no assertion removed."
+
   # Adversarial review of agent PRs only (branches agent/*, same repository).
   # Reviewer-only: it can block a PR but never pushes. Human PRs are reviewed
   # by the human who opens them.

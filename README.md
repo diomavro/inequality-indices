@@ -59,9 +59,10 @@ docs/      AGENT_MISSION.md: invariants for automated contributions
 CI runs `make check` on every pull request and every push to `main`. A weekly agent
 (`.github/workflows/agent.yml`) takes the top item from `AGENT_TODO.md`, opens a
 pull request, and an automated reviewer checks it against
-`docs/AGENT_MISSION.md`. Any PR that changes code, figures, or the
-manuscript is merged by an author; only backlog and documentation updates merge
-automatically. The authors' own queue is `HUMAN_TODO.md`.
+`docs/AGENT_MISSION.md`. As in the authors' other
+repositories, green agent PRs merge automatically; a `constitution-guard` job
+keeps the workflows, the agent's mission, the README, the raw data, and the
+build configuration human-curated. The authors' own queue is `HUMAN_TODO.md`.
 
 ## Licence
 
