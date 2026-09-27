@@ -6,13 +6,18 @@ item that needs no account, key, or author decision. Close items in place with
 
 ## Robustness of the empirical section (2026-09-26)
 
-- [ ] **Add a tolerance band to the Lorenz-crossing classification.**
+- [x] **Done 2026-09-27**: Add a tolerance band to the Lorenz-crossing classification.
       Crossings are now counted with a 1e-9 tolerance on 99 percentile
       ordinates, and many sit in the tails where the curves nearly touch
       (62% cross on percentiles, 36% on deciles). Add macros for the crossing
       share and the seven-index agreement rate when ordinate gaps below
       0.001 and 0.002 are treated as ties, and one sentence reporting them in
       the empirical section (`sec:empirics`). The dominance-direction assertion must keep passing.
+      Added `PipShareCrossTie001/002` and `PipTpAgreeCrossTie001/002` macros
+      (crossing share falls to 29%/16%, and among those coarser crossings the
+      seven indices agree in only 27%/20% — near-tangencies were not driving
+      the disagreement rate). The strict dominance-direction assertion (TOL=1e-9)
+      is untouched and still passes.
 - [ ] **Report the headline rates separately for income and consumption surveys.**
       `pip_pairs.csv` has `welfare_type`. Add macros for the crossing share,
       `PipTpAgreeCross` and `PipRelAbsOppMaterialDom` by welfare type, and one
