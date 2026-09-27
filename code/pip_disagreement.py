@@ -41,6 +41,10 @@ NON_TP = ["vl", "p90p10"]
 ABSOLUTE = ["abs_gini", "sd", "kolm"]
 ALL = TP + [b for b, _ in TWINS] + NON_TP + ABSOLUTE
 TOL = 1e-9  # Lorenz ordinate tolerance (shares)
+TIE_BANDS = {
+    "001": 0.001,
+    "002": 0.002,
+}  # robustness: ordinate gaps below this are ties
 MATERIAL = 0.01  # |change in Gini| for the "material change" subsample
 # Noise screen: an index "moves" in a pair if its |change in log| exceeds that
 # index's own median |change in log| across all pairs (treats indices symmetrically).
@@ -51,15 +55,19 @@ def lorenz(y: np.ndarray) -> np.ndarray:
     return (np.cumsum(y) / y.sum())[:-1]
 
 
-def decile_class(d: np.ndarray) -> str:
-    """Lorenz relationship using only the 9 decile ordinates (robustness)."""
-    k = crossings(d[9::10])
+def classify(k: int) -> str:
+    """Lorenz relationship label from a crossing count."""
     return "dominance" if k == 0 else "single_cross" if k == 1 else "multi_cross"
 
 
-def crossings(d: np.ndarray) -> int:
-    """Sign changes of d = L_b - L_a, ignoring near-zero ordinates."""
-    s = np.sign(np.where(np.abs(d) < TOL, 0.0, d))
+def decile_class(d: np.ndarray) -> str:
+    """Lorenz relationship using only the 9 decile ordinates (robustness)."""
+    return classify(crossings(d[9::10]))
+
+
+def crossings(d: np.ndarray, tol: float = TOL) -> int:
+    """Sign changes of d = L_b - L_a, ignoring ordinates within tol of zero."""
+    s = np.sign(np.where(np.abs(d) < tol, 0.0, d))
     s = s[s != 0]
     return int(np.sum(s[1:] != s[:-1]))
 
@@ -84,14 +92,12 @@ def build_pairs(panel: pd.DataFrame, curves: dict) -> pd.DataFrame:
                 "year_b": b.year,
                 "n_cross": k,
                 # +1: later curve weakly above (more equal); -1: below
-                "lorenz": (
-                    "dominance"
-                    if k == 0
-                    else "single_cross"
-                    if k == 1
-                    else "multi_cross"
-                ),
+                "lorenz": classify(k),
                 "lorenz_decile": decile_class(d),
+                **{
+                    f"lorenz_tie{suffix}": classify(crossings(d, tol))
+                    for suffix, tol in TIE_BANDS.items()
+                },
                 "dom_dir": int(np.sign(d[np.abs(d) >= TOL].sum())) if k == 0 else 0,
                 # which curve is higher at the bottom (first non-zero ordinate)
                 "bottom_dir": int(np.sign(d[np.abs(d) >= TOL][0]))
@@ -142,6 +148,10 @@ def macros(R: dict) -> str:
         "PipShareCross": pct(1 - R["share_dominance"]),
         "PipShareSingle": pct(R["share_single"]),
         "PipShareCrossDecile": pct(1 - R["share_dominance_decile"]),
+        "PipShareCrossTieOne": pct(R["share_cross_tie001"]),
+        "PipShareCrossTieTwo": pct(R["share_cross_tie002"]),
+        "PipTpAgreeCrossTieOne": pct(R["tp_agree_cross_tie001"]),
+        "PipTpAgreeCrossTieTwo": pct(R["tp_agree_cross_tie002"]),
         "PipShareMulti": pct(R["share_multi"]),
         "PipTpAgreeAll": pct(R["tp_agree_all"]),
         "PipTpAgreeCross": pct(R["tp_agree_cross"]),
@@ -250,6 +260,7 @@ def main() -> None:
     mat = p.d_gini.abs() >= MATERIAL
 
     dom = p.lorenz == "dominance"
+    tie_dom = {suffix: p[f"lorenz_tie{suffix}"] == "dominance" for suffix in TIE_BANDS}
     # Theory check 1: under dominance, every TP index moves opposite to dom_dir
     # (curve above = more equal = index falls), weakly.
     viol_tp = {m: int(((S[m] == p.dom_dir) & (p.dom_dir != 0) & dom).sum()) for m in TP}
@@ -313,6 +324,14 @@ def main() -> None:
         "share_dominance": float(dom.mean()),
         "share_single": float(sc.mean()),
         "share_dominance_decile": float((p.lorenz_decile == "dominance").mean()),
+        **{
+            f"share_cross_tie{suffix}": float((~tie_dom[suffix]).mean())
+            for suffix in TIE_BANDS
+        },
+        **{
+            f"tp_agree_cross_tie{suffix}": float(p.tp_agree[~tie_dom[suffix]].mean())
+            for suffix in TIE_BANDS
+        },
         "share_multi": float((p.lorenz == "multi_cross").mean()),
         "tp_agree_all": float(p.tp_agree.mean()),
         "tp_agree_cross": float(p.tp_agree[~dom].mean()),
