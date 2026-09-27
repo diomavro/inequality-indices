@@ -62,8 +62,8 @@ jobs:
             4. Run `make check PY=python`. Never open a PR that is red.
                Commit messages and the PR body must not contain a Co-Authored-By
                trailer or a "Generated with Claude Code" line (invariant 8).
-            PRs that touch code/, figures/, paper/, HUMAN_TODO.md, or build/lint
-            config wait for a human merge; that is expected, not a failure.
+            Never edit the constitution listed in docs/AGENT_MISSION.md (CI fails
+            such a PR), and never remove an assert from the assertion scripts.
             5. Commit, push the branch, and run
-               `gh pr create --assignee diomavro --title "<plain one-line summary>" --body "<what changed, why, how validated>\n\nOpened by the weekly agent; a human merges it unless it only touches backlog or documentation files."`
+               `gh pr create --assignee diomavro --title "<plain one-line summary>" --body "<what changed, why, how validated>\n\nOpened by the weekly agent; auto-merges on green CI."`
                Do not merge.

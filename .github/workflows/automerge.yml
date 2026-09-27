@@ -1,8 +1,10 @@
 name: Automerge agent PRs
 
 # Squash-merges an open, non-draft PR from an agent/* branch of THIS repository
-# once CI (check + agent-review) is green. Human PRs are never auto-merged, and
-# PRs that touch the guarded paths wait for a human.
+# once the whole CI run (check, trailers, constitution-guard, agent-review) is
+# green, as in tail-lab. Human PRs are never auto-merged. The constitution is
+# enforced by ci.yml's constitution-guard; the same list is re-checked here so
+# a guard failure can never be bypassed by a later green run.
 
 on:
   workflow_run:
@@ -50,16 +52,8 @@ jobs:
           n_files=$(printf '%s\n' "$files" | grep -c . || true)
           n_expected=$(gh pr view "$pr" --repo "$REPO" --json changedFiles -q .changedFiles)
           if [ "$n_files" != "$n_expected" ]; then echo "::error::file list incomplete"; exit 1; fi
-          # Anything that can change a claim, a number, or the gate itself waits
-          # for a human: all of code/ (a new file there can shadow an import used
-          # by the assertion scripts), figures/, paper/, raw data, workflows, the
-          # mission, HUMAN_TODO, and build/lint config in any directory (a
-          # lowercase `makefile` or `GNUmakefile` overrides `Makefile`; latexmkrc
-          # runs Perl; ruff/pyproject config can switch off lint). Case-insensitive.
-          # In practice automerge lands backlog and documentation updates only.
-          if printf '%s\n' "$files" | grep -qiE '^\.github/|^docs/AGENT_MISSION\.md$|^HUMAN_TODO\.md$|^data/|^code/|^figures/|^paper/|(^|/)(gnu)?makefile$|(^|/)\.?latexmkrc$|(^|/)(\.?ruff|pyproject)\.toml$'; then
-            echo "touches a guarded path; leaving for human review"
-            gh pr comment "$pr" --repo "$REPO" --body "Green, but this PR touches a guarded path (workflows, mission, code/, figures/, paper/, raw data, build or lint config, or HUMAN_TODO). Needs a human merge."
+          if printf '%s\n' "$files" | grep -qiE '^\.github/|^docs/AGENT_MISSION\.md$|^README\.md$|^data/raw/|(^|/)(gnu)?makefile$|(^|/)\.?latexmkrc$|(^|/)(\.?ruff|pyproject)\.toml$|^code/requirements\.txt$'; then
+            echo "touches the constitution; leaving for human review"
             exit 0
           fi
           head_now=$(gh pr view "$pr" --repo "$REPO" --json headRefOid -q .headRefOid)

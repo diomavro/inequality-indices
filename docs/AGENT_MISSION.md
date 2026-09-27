@@ -50,13 +50,17 @@ The paper's claims of novelty, its title and abstract framing, its structure
 (what goes to an appendix), the target journal, licensing, co-author sign-off,
 and anything that needs an account, a key, or new data sources.
 
-## Guarded paths
+## The constitution (human-curated)
 
-`automerge.yml` never merges a PR touching `.github/`, this file,
-`HUMAN_TODO.md`, anything under `code/`, `data/`, `figures/`, or `paper/`,
-or any makefile, latexmkrc, ruff or pyproject config. So every change to a
-claim, a number, or the gate is merged by a human; automerge lands backlog and
-documentation updates only. Waiting for a human is expected, not a failure.
+As in tail-lab, agent PRs merge automatically once the whole CI run is green:
+`make check`, the co-author trailer check, `constitution-guard`, and the
+adversarial reviewer (a DEFECT verdict blocks). `constitution-guard` fails an
+agent PR that edits the constitution: `.github/`, this file, `README.md`,
+`data/raw/`, any makefile, latexmkrc, ruff or pyproject config, or
+`code/requirements.txt`, or that removes an `assert` from
+`code/verify_corrections.py` or `code/pip_disagreement.py`. Such changes need a
+human. Everything else, including the manuscript, code, and figures, is the
+agent's to change within the invariants above.
 
 ## Backlogs
 

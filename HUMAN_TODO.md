@@ -36,16 +36,12 @@ reorders, or ticks items. Close items as `**Done YYYY-MM-DD (who)**: ...`.
       request required, `check` status required, no force pushes or deletion);
       secret scanning with push protection and private vulnerability reporting
       enabled. Changes to `main` now go through pull requests.
-- [ ] **Decide how agent work appears in the history.** The authors' policy is
-      no AI co-author trailer, and CI rejects one, but squash-merged agent PRs are
-      still *authored* by `claude[bot]`. Options: accept that (the history then
-      says truthfully which commits a bot wrote), or keep the agent to opening
-      PRs and merge them yourself, re-authoring as you see fit. Automerge only lands backlog and
-      documentation changes; everything touching code, figures, or the paper
-      waits for you.
-- [ ] **Run the agent once by hand and read its PR before trusting the schedule:**
-      `gh workflow run agent.yml --repo diomavro/inequality-indices`. The
-      schedule is Mondays 07:00 UTC.
+- [x] **Done 2026-09-27 (Dio)**: agent PRs auto-merge without a human, as in
+      tail-lab; agent commits appear as authored by `claude`, with no co-author
+      trailer. The constitution (workflows, mission, README, raw data, build
+      config) and the assertion count stay protected by `constitution-guard`.
+- [x] **Done 2026-09-27 (Claude)**: first agent run (PR #4) worked end to end:
+      opened by the Claude app, CI and reviewer green.
 - [ ] **Set GitHub usage alerts** (Billing → spending limits) so a runaway
       workflow cannot eat the Actions minutes shared with tail-lab.
 
