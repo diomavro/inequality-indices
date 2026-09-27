@@ -58,5 +58,13 @@ jobs:
           fi
           head_now=$(gh pr view "$pr" --repo "$REPO" --json headRefOid -q .headRefOid)
           if [ "$head_now" != "$HEAD_SHA" ]; then echo "head moved since CI ran"; exit 0; fi
-          gh pr merge "$pr" --repo "$REPO" --squash --delete-branch --match-head-commit "$HEAD_SHA"
+          # Write the squash message ourselves. GitHub's default adds a
+          # "Co-authored-by:" line for every commit author when a PR has more
+          # than one (e.g. after a branch update), which put an AI co-author
+          # trailer on main once (#4). Keep the commit messages, drop trailers.
+          title=$(gh pr view "$pr" --repo "$REPO" --json title -q .title)
+          body=$(gh api --paginate "repos/$REPO/pulls/$pr/commits" --jq '.[].commit.message' \
+                 | grep -viE '^[[:space:]]*(co-authored-by|co-developed-by|assisted-by|signed-off-by):|generated with \[?claude code' || true)
+          gh pr merge "$pr" --repo "$REPO" --squash --delete-branch --match-head-commit "$HEAD_SHA" \
+            --subject "$title (#$pr)" --body "$body"
           gh workflow run ci.yml --repo "$REPO" --ref main
