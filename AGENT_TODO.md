@@ -18,10 +18,18 @@ item that needs no account, key, or author decision. Close items in place with
       seven indices agree in only 27%/20% — near-tangencies were not driving
       the disagreement rate). The strict dominance-direction assertion (TOL=1e-9)
       is untouched and still passes.
-- [ ] **Report the headline rates separately for income and consumption surveys.**
+- [x] **Done 2026-09-28**: Report the headline rates separately for income and
+      consumption surveys.
       `pip_pairs.csv` has `welfare_type`. Add macros for the crossing share,
       `PipTpAgreeCross` and `PipRelAbsOppMaterialDom` by welfare type, and one
       sentence saying whether the pattern holds in both.
+      Added `PipShareCross{Income,Consumption}`, `PipTpAgreeCross{Income,Consumption}`,
+      and `PipRelAbsOppMaterialDom{Income,Consumption}` macros in
+      `pip_disagreement.py`, plus one sentence per finding in `sec:empirics`.
+      The crossing share (65%/56%) and the material-dominance absolute-Gini
+      reversal (25%/15%) hold in both welfare concepts, though the seven
+      transfer-principle indices agree noticeably more often on crossing
+      consumption pairs (60%) than income pairs (47%).
 - [ ] **Add an exponential-index (E_kappa) robustness row.**
       The Axiomatic Optimality theorem uses E_kappa, the empirics use the absolute Gini. Compute
       E_kappa with kappa scaled to each pair's first-survey mean (kappa = c/mu,

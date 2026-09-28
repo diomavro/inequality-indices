@@ -849,6 +849,7 @@ Because the Gini is itself one of the indices, we also use a screen that treats 
 Among the \PipNBigCross{} crossing pairs with at least two such indices, they agree in \PipTpAgreeBigCross{}.
 Without standard errors we cannot say how many of the remaining disagreements reflect sampling noise.
 The results are the same if we drop the distributions that are not computed from microdata: in the \PipNMicroPairs{} pairs of microdata surveys, the curves cross in \PipShareCrossMicro{} of pairs and the seven indices agree in \PipTpAgreeCrossMicro{} of crossing pairs.
+The pattern also holds within each welfare concept, though not to the same degree: curves cross in \PipShareCrossIncome{} of income-survey pairs and \PipShareCrossConsumption{} of consumption-survey pairs, and when they cross the seven indices agree more often for consumption (\PipTpAgreeCrossConsumption{}) than for income (\PipTpAgreeCrossIncome{}).
 Treating ordinate gaps below 0.001 (0.002) of the welfare share as ties as well, rather than only gaps below the $10^{-9}$ numerical tolerance, lowers the crossing share to \PipShareCrossTieOne{} (\PipShareCrossTieTwo{}), yet the seven indices agree in only \PipTpAgreeCrossTieOne{} (\PipTpAgreeCrossTieTwo{}) of these coarser, unambiguous crossings, so ignoring near-tangencies concentrates rather than removes the disagreement.
 
 \begin{figure}[H]
@@ -891,6 +892,7 @@ The choice of absolute index matters little: the Kolm index moves in the same di
 
 The consequence is that Lorenz dominance, which settles the comparison for every relative index satisfying the transfer principle, does not settle the absolute one.
 Among the \PipNMaterialDom{} pairs in which the Gini moves by at least one point and one Lorenz curve dominates, the seven relative indices agree by Theorem~\ref{thm:dss}, but the absolute Gini moves the other way in \PipRelAbsOppMaterialDom{}.
+This reversal holds for both welfare concepts, though it is more common among income surveys (\PipRelAbsOppMaterialDomIncome{}) than consumption surveys (\PipRelAbsOppMaterialDomConsumption{}).
 In the \PipNMaterialCross{} crossing pairs with changes of the same size, the relative and absolute Gini conflict in \PipRelAbsOppMaterialCross{}, about as often as the relative indices conflict among themselves (\PipTpDisMaterialCross{}).
 Taking all \PipNMaterial{} large changes together, the relative and absolute Gini conflict in \PipRelAbsOppMaterial{} of pairs and the relative indices in \PipTpDisMaterial{}.
 Figure~\ref{fig:pip_countries} shows four cases.
