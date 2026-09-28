@@ -60,6 +60,18 @@
     "p90p10": 56
   },
   "n_dominance": 738,
+  "by_welfare": {
+    "income": {
+      "share_cross": 0.6527355623100304,
+      "tp_agree_cross": 0.47497089639115253,
+      "rel_abs_opp_material_dom": 0.24596774193548387
+    },
+    "consumption": {
+      "share_cross": 0.5602503912363067,
+      "tp_agree_cross": 0.5977653631284916,
+      "rel_abs_opp_material_dom": 0.14761904761904762
+    }
+  },
   "n_sf_pairs": 116,
   "sf_violations": {
     "ge_m1": 0,

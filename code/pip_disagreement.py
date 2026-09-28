@@ -46,6 +46,7 @@ TIE_BANDS = {
     "002": 0.002,
 }  # robustness: ordinate gaps below this are ties
 MATERIAL = 0.01  # |change in Gini| for the "material change" subsample
+WELFARE_TYPES = ["income", "consumption"]
 # Noise screen: an index "moves" in a pair if its |change in log| exceeds that
 # index's own median |change in log| across all pairs (treats indices symmetrically).
 
@@ -195,6 +196,13 @@ def macros(R: dict) -> str:
         "PipDisGeTwoAtkTwo": pct(R["pairwise_disagreement"]["ge2|atk2"]),
         "PipDisGiniAbs": pct(R["pairwise_disagreement"]["gini|abs_gini"]),
     }
+    for w in WELFARE_TYPES:
+        cap = w.capitalize()
+        m[f"PipShareCross{cap}"] = pct(R["by_welfare"][w]["share_cross"])
+        m[f"PipTpAgreeCross{cap}"] = pct(R["by_welfare"][w]["tp_agree_cross"])
+        m[f"PipRelAbsOppMaterialDom{cap}"] = pct(
+            R["by_welfare"][w]["rel_abs_opp_material_dom"]
+        )
     for key, (c, w, sc, y0, y1) in CASES.items():
         a, b = R["cases"][key]
         m[f"Pip{key}Years"] = f"{y0}--{y1}"
@@ -260,6 +268,16 @@ def main() -> None:
     mat = p.d_gini.abs() >= MATERIAL
 
     dom = p.lorenz == "dominance"
+    by_welfare = {
+        w: {
+            "share_cross": float((p.lorenz[p.welfare_type == w] != "dominance").mean()),
+            "tp_agree_cross": float(p.tp_agree[(p.welfare_type == w) & ~dom].mean()),
+            "rel_abs_opp_material_dom": float(
+                p.rel_abs_opposite[(p.welfare_type == w) & mat & dom].mean()
+            ),
+        }
+        for w in WELFARE_TYPES
+    }
     tie_dom = {suffix: p[f"lorenz_tie{suffix}"] == "dominance" for suffix in TIE_BANDS}
     # Theory check 1: under dominance, every TP index moves opposite to dom_dir
     # (curve above = more equal = index falls), weakly.
@@ -379,6 +397,7 @@ def main() -> None:
         "tp_violations_under_dominance": viol_tp,
         "nontp_violations_under_dominance": viol_non,
         "n_dominance": int(dom.sum()),
+        "by_welfare": by_welfare,
         "n_sf_pairs": int(sf.sum()),
         "sf_violations": sf_viol,
         "rel_abs_opposite": float(p.rel_abs_opposite.mean()),
