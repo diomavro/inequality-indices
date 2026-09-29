@@ -38,6 +38,15 @@ item that needs no account, key, or author decision. Close items in place with
 
 ## Code hygiene
 
+- [ ] **Write the processed CSVs at fixed precision so rebuilds do not churn.**
+      `data/processed/pip_indices.csv` differs between machines at about the
+      15th significant digit (PR #7 committed 412 changed lines of pure float
+      noise; see the reproducibility note in HUMAN_TODO.md). Write
+      `pip_indices.csv` and `pip_pairs.csv` with a fixed `float_format` (e.g.
+      `%.12g`) in `code/pip_panel.py` and `code/pip_disagreement.py`, confirm
+      `paper/pip_macros.tex` is unchanged, and confirm two runs produce
+      byte-identical CSVs. Leave the assertions untouched.
+
 - [ ] **Bring `code/verify_properties.py` under the lint gate.**
       Fix its ruff findings without changing what it prints, add it to `LINTED`
       in the Makefile. (Makefile is a guarded path: expect a human merge.)
