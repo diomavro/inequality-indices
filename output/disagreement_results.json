@@ -44,6 +44,8 @@
   "share_growth_exceeds_dlngini_material": 0.5278514588859416,
   "share_growth_exceeds_dlngini": 0.6879795396419437,
   "kolm_agrees_abs_gini": 0.9565217391304348,
+  "ekappa0.5_agrees_abs_gini": 0.9442455242966752,
+  "ekappa1.0_agrees_abs_gini": 0.9826086956521739,
   "sd_agrees_abs_gini": 0.8905370843989769,
   "income_range": 56.08820777167461,
   "tp_violations_under_dominance": {
