@@ -26,6 +26,8 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+import inequality_indices as ii
+
 ROOT = Path(__file__).resolve().parent.parent
 BINS = ROOT / "data/raw/pip_world_100bin.csv"
 PANEL = ROOT / "data/processed/pip_indices.csv"
@@ -39,6 +41,7 @@ DTS = ["ge_m1", "mld", "atk05", "theil"]
 TWINS = [("cv", "ge2"), ("atk1", "mld"), ("atk2", "ge_m1"), ("ge05", "atk05")]
 NON_TP = ["vl", "p90p10"]
 ABSOLUTE = ["abs_gini", "sd", "kolm"]
+EKAPPA_C = [0.5, 1.0]  # kappa = c / first-survey mean
 ALL = TP + [b for b, _ in TWINS] + NON_TP + ABSOLUTE
 TOL = 1e-9  # Lorenz ordinate tolerance (shares)
 TIE_BANDS = {
@@ -171,6 +174,8 @@ def macros(R: dict) -> str:
         "PipMedDlnGini": f"{100 * R['median_abs_dlngini']:.1f}",
         "PipShareGrowthExceeds": pct(R["share_growth_exceeds_dlngini"]),
         "PipKolmAgree": pct(R["kolm_agrees_abs_gini"]),
+        "PipEkappaHalfAgree": pct(R["ekappa0.5_agrees_abs_gini"]),
+        "PipEkappaOneAgree": pct(R["ekappa1.0_agrees_abs_gini"]),
         "PipSdAgree": pct(R["sd_agrees_abs_gini"]),
         "PipIncomeRange": f"{int(R['income_range'] // 10 * 10)}",
         "PipPNinetyViol": str(R["nontp_violations_under_dominance"]["p90p10"]),
@@ -248,6 +253,20 @@ def main() -> None:
     p.to_csv(ROOT / "data/processed/pip_pairs.csv", index=False)
 
     S = {m: sgn(p[f"d_{m}"]) for m in ALL}
+    levels = {
+        k: g.sort_values("percentile").avg_welfare.to_numpy()
+        for k, g in bins.groupby(["country_code", "year", "welfare_type"])
+    }
+    # Kolm index (ordinal twin of E_kappa) with kappa = c / mean of the first survey,
+    # the same kappa applied to both surveys of a pair.
+    for c in EKAPPA_C:
+        d_e = []
+        for r in p.itertuples():
+            ya = levels[(r.country_code, r.year_a, r.welfare_type)]
+            yb = levels[(r.country_code, r.year_b, r.welfare_type)]
+            kappa = c / ya.mean()
+            d_e.append(ii.kolm(yb, kappa) - ii.kolm(ya, kappa))
+        S[f"ekappa{c}"] = sgn(pd.Series(d_e, index=p.index))
     tp_signs = pd.concat([S[m] for m in TP], axis=1)
     p["tp_agree"] = tp_signs.nunique(axis=1).eq(1)
     dts_signs = pd.concat([S[m] for m in DTS], axis=1)
@@ -388,6 +407,12 @@ def main() -> None:
             ).mean()
         ),
         "kolm_agrees_abs_gini": float((S["kolm"] * S["abs_gini"] > 0).mean()),
+        **{
+            f"ekappa{c}_agrees_abs_gini": float(
+                (S[f"ekappa{c}"] * S["abs_gini"] > 0).mean()
+            )
+            for c in EKAPPA_C
+        },
         "sd_agrees_abs_gini": float((S["sd"] * S["abs_gini"] > 0).mean()),
         "income_range": float(
             panel.groupby("country_code")["mean"]

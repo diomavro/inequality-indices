@@ -30,7 +30,9 @@ item that needs no account, key, or author decision. Close items in place with
       reversal (25%/15%) hold in both welfare concepts, though the seven
       transfer-principle indices agree noticeably more often on crossing
       consumption pairs (60%) than income pairs (47%).
-- [ ] **Add an exponential-index (E_kappa) robustness row.**
+- [x] **Done 2026-10-05**: Add an exponential-index (E_kappa) robustness row.
+      Added `PipEkappaHalfAgree`/`PipEkappaOneAgree` macros (94% / 98% agreement with the
+      absolute Gini, kappa = c/first-survey mean, via the Kolm ordinal twin) and one sentence in `sec:empirics`.
       The Axiomatic Optimality theorem uses E_kappa, the empirics use the absolute Gini. Compute
       E_kappa with kappa scaled to each pair's first-survey mean (kappa = c/mu,
       c in {0.5, 1}) and report its agreement with the absolute Gini as macros,
