@@ -250,7 +250,7 @@ def main() -> None:
         for k, g in bins.groupby(["country_code", "year", "welfare_type"])
     }
     p = build_pairs(panel, curves)
-    p.to_csv(ROOT / "data/processed/pip_pairs.csv", index=False)
+    p.to_csv(ROOT / "data/processed/pip_pairs.csv", index=False, float_format="%.12g")
 
     S = {m: sgn(p[f"d_{m}"]) for m in ALL}
     levels = {

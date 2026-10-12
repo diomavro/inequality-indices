@@ -1,8 +1,8 @@
 {
   "n_distributions": 2588,
   "n_dist_countries": 172,
-  "gini_max_abs_diff": 0.003864683298781091,
-  "mld_max_abs_diff": 0.01650270115692043,
+  "gini_max_abs_diff": 0.003864683299000027,
+  "mld_max_abs_diff": 0.016502701157000033,
   "n_growth": 1384,
   "abs_up_given_gini_down_growth": 0.7076502732240437,
   "long_n": 136,
@@ -36,8 +36,8 @@
   "tp_agree_cross_micro": 0.505922165820643,
   "abs_up_given_gini_down_growth_micro": 0.7060478199718706,
   "vl_violations": 0,
-  "median_abs_growth": 0.03752963328905064,
-  "median_abs_dlngini": 0.020773340012529628,
+  "median_abs_growth": 0.037529633288061935,
+  "median_abs_dlngini": 0.02077334001131664,
   "rel_abs_opp_material_dom": 0.20087336244541484,
   "n_material_dom": 458,
   "rel_abs_opp_material_cross": 0.2635135135135135,
@@ -47,7 +47,7 @@
   "ekappa0.5_agrees_abs_gini": 0.9442455242966752,
   "ekappa1.0_agrees_abs_gini": 0.9826086956521739,
   "sd_agrees_abs_gini": 0.8905370843989769,
-  "income_range": 56.08820777167461,
+  "income_range": 56.08820777173173,
   "tp_violations_under_dominance": {
     "gini": 0,
     "zenga": 0,
@@ -131,26 +131,26 @@
   "cases": {
     "China": [
       {
-        "gini": 0.322060746127437,
-        "abs_gini": 0.610635241342642,
-        "mean": 1.8960250470916389
+        "gini": 0.322060746127,
+        "abs_gini": 0.610635241343,
+        "mean": 1.89602504709
       },
       {
-        "gini": 0.4210332003560307,
-        "abs_gini": 3.6680678132252846,
-        "mean": 8.712063110755928
+        "gini": 0.421033200356,
+        "abs_gini": 3.66806781323,
+        "mean": 8.71206311076
       }
     ],
     "Brazil": [
       {
-        "gini": 0.5836099854393443,
-        "abs_gini": 8.097714988476117,
-        "mean": 13.875216652402068
+        "gini": 0.583609985439,
+        "abs_gini": 8.09771498848,
+        "mean": 13.8752166524
       },
       {
-        "gini": 0.5290512260087421,
-        "abs_gini": 9.720092959606502,
-        "mean": 18.372687712939705
+        "gini": 0.529051226009,
+        "abs_gini": 9.72009295961,
+        "mean": 18.3726877129
       }
     ]
   }

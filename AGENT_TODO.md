@@ -40,7 +40,9 @@ item that needs no account, key, or author decision. Close items in place with
 
 ## Code hygiene
 
-- [ ] **Write the processed CSVs at fixed precision so rebuilds do not churn.**
+- [x] **Done 2026-10-12**: Write the processed CSVs at fixed precision so rebuilds do not churn.
+      Both writers now use `float_format="%.12g"`; `pip_macros.tex` is unchanged and two
+      consecutive rebuilds give byte-identical CSVs.
       `data/processed/pip_indices.csv` differs between machines at about the
       15th significant digit (PR #7 committed 412 changed lines of pure float
       noise; see the reproducibility note in HUMAN_TODO.md). Write

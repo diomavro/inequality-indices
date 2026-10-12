@@ -80,7 +80,7 @@ def main() -> None:
     assert out.gini_pip.notna().all()
 
     dest = ROOT / "data/processed/pip_indices.csv"
-    out.to_csv(dest, index=False)
+    out.to_csv(dest, index=False, float_format="%.12g")
     print(f"{len(out)} distributions, {out.country_code.nunique()} countries -> {dest}")
     for ours, theirs in [
         ("gini", "gini_pip"),
