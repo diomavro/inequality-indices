@@ -1,7 +1,7 @@
-# NOTE (2026-09): the DTS and subgroup-consistency tests in this script sample
-# only favourable configurations (e.g. poorest vs richest pair) and report PASS.
-# Both properties FAIL for Z and Z*; see verify_corrections.py for integer
-# counterexamples and unrestricted simulations. The paper relies on that script.
+# NOTE (2026-10): the DTS and subgroup-consistency tests that used to live here
+# sampled only favourable configurations and reported a false PASS. They were
+# removed: both properties FAIL for Z and Z*; see verify_corrections.py for the
+# integer counterexamples and unrestricted searches.
 """
 Verify Properties of the Integral Zenga Index
 ==============================================
@@ -241,90 +241,6 @@ def test_transfer_principle() -> None:
     print()
 
 
-def test_dts() -> None:
-    """For 500 random distributions, verify the low-income transfer reduces Z* more."""
-    print("=" * 70)
-    print("4. DIMINISHING TRANSFER SENSITIVITY (500 random distributions)")
-    print("=" * 70)
-    print()
-
-    rng = np.random.default_rng(123)
-    n_tests = 500
-    n_pass = 0
-    n_fail = 0
-    n_skip = 0
-
-    for _ in range(n_tests):
-        # Generate a distribution with at least 4 elements
-        n = rng.integers(6, 20)
-        y = np.sort(rng.uniform(1.0, 200.0, size=n))
-
-        # Find two pairs with the same gap: low pair (i, i+1) and high pair (j, j+1)
-        # where y[i] < y[j] and gap is the same
-        # Use fixed-gap approach: pick two non-overlapping pairs
-        i_low = 0
-        i_high = n - 2
-        gap_low = y[i_low + 1] - y[i_low]
-        gap_high = y[i_high + 1] - y[i_high]
-
-        # Make the gaps equal by adjusting the distribution
-        # Set specific values to ensure same gap
-        target_gap = 10.0
-        y_test = y.copy()
-        y_test[0] = 5.0
-        y_test[1] = 5.0 + target_gap
-        y_test[-2] = 180.0
-        y_test[-1] = 180.0 + target_gap
-        y_test = np.sort(y_test)
-
-        # Verify the pairs are still at positions 0,1 and n-2,n-1
-        # Find the low and high pairs
-        idx_low_donor = np.where(y_test == 15.0)[0]
-        idx_low_recip = np.where(y_test == 5.0)[0]
-        idx_high_donor = np.where(y_test == 190.0)[0]
-        idx_high_recip = np.where(y_test == 180.0)[0]
-
-        if (len(idx_low_donor) == 0 or len(idx_low_recip) == 0 or
-                len(idx_high_donor) == 0 or len(idx_high_recip) == 0):
-            n_skip += 1
-            continue
-
-        idx_ld = idx_low_donor[0]
-        idx_lr = idx_low_recip[0]
-        idx_hd = idx_high_donor[0]
-        idx_hr = idx_high_recip[0]
-
-        delta = 1.0
-
-        # Low-income transfer
-        y_low = y_test.copy()
-        y_low[idx_ld] -= delta
-        y_low[idx_lr] += delta
-
-        # High-income transfer
-        y_high = y_test.copy()
-        y_high[idx_hd] -= delta
-        y_high[idx_hr] += delta
-
-        z_before = integral_zenga(y_test)
-        z_low = integral_zenga(y_low)
-        z_high = integral_zenga(y_high)
-
-        reduction_low = z_before - z_low
-        reduction_high = z_before - z_high
-
-        if reduction_low > reduction_high - TOL:
-            n_pass += 1
-        else:
-            n_fail += 1
-
-    print(f"  Passed: {n_pass}/{n_tests - n_skip}")
-    print(f"  Failed: {n_fail}/{n_tests - n_skip}")
-    print(f"  Skipped: {n_skip}/{n_tests}")
-    print(f"  DTS: {'VERIFIED' if n_fail == 0 else 'VIOLATIONS FOUND'}")
-    print()
-
-
 def test_scale_invariance() -> None:
     """Z*(lambda * y) = Z*(y) for several lambda and y."""
     print("=" * 70)
@@ -361,7 +277,6 @@ def main() -> None:
     test_population_invariance()
     test_compare_discrete_zenga()
     test_transfer_principle()
-    test_dts()
     test_scale_invariance()
 
 

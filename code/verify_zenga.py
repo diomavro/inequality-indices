@@ -1,7 +1,7 @@
-# NOTE (2026-09): the DTS and subgroup-consistency tests in this script sample
-# only favourable configurations (e.g. poorest vs richest pair) and report PASS.
-# Both properties FAIL for Z and Z*; see verify_corrections.py for integer
-# counterexamples and unrestricted simulations. The paper relies on that script.
+# NOTE (2026-10): the DTS and subgroup-consistency tests that used to live here
+# sampled only favourable configurations and reported a false PASS. They were
+# removed: both properties FAIL for Z and Z*; see verify_corrections.py for the
+# integer counterexamples and unrestricted searches.
 """
 Verify Axiomatic Properties of the Zenga (2007) Index
 =====================================================
@@ -218,85 +218,8 @@ def main() -> None:
 
     # ---- 9. DIMINISHING TRANSFER SENSITIVITY (DTS) ----
     print("9. DIMINISHING TRANSFER SENSITIVITY")
-    print("   Same-gap transfers at different income levels; low-income")
-    print("   transfer should reduce Z more than high-income transfer.")
-    print()
-
-    # Test DTS with multiple distributions and gaps
-    dts_tests = [
-        ("Y_DTS = (5,15,50,100,190,200), gap=10, δ=1",
-         Y_DTS, 0, 1, 4, 5, 1.0),
-        ("(2,12,100,200,490,500), gap=10, δ=1",
-         np.array([2.0, 12.0, 100.0, 200.0, 490.0, 500.0]), 0, 1, 4, 5, 1.0),
-        ("(1,6,50,100,195,200), gap=5, δ=1",
-         np.array([1.0, 6.0, 50.0, 100.0, 195.0, 200.0]), 0, 1, 4, 5, 1.0),
-    ]
-
-    dts_pass = True
-    for desc, y, lo_poor, lo_rich, hi_poor, hi_rich, delta in dts_tests:
-        z_base = zenga(y)
-
-        # Low-income transfer
-        y_low = y.copy()
-        y_low[lo_rich] -= delta
-        y_low[lo_poor] += delta
-        reduction_low = z_base - zenga(y_low)
-
-        # High-income transfer
-        y_high = y.copy()
-        y_high[hi_rich] -= delta
-        y_high[hi_poor] += delta
-        reduction_high = z_base - zenga(y_high)
-
-        ok = reduction_low > reduction_high + TOL
-        if not ok:
-            dts_pass = False
-        print(f"   {desc}")
-        print(f"     Low-income reduction:  {reduction_low:.10f}")
-        print(f"     High-income reduction: {reduction_high:.10f}")
-        print(f"     Ratio (low/high):      {reduction_low/reduction_high:.4f}")
-        print(f"     {'✓' if ok else '✗'}")
-        print()
-
-    # Extensive random DTS test
-    rng2 = np.random.default_rng(456)
-    n_dts_tests = 500
-    n_dts_fail = 0
-    for _ in range(n_dts_tests):
-        # Create a distribution with known pairs at low and high ends
-        d = rng2.uniform(5.0, 50.0)  # gap
-        y_low_level = rng2.uniform(1.0, 50.0)
-        y_high_level = y_low_level + rng2.uniform(100.0, 500.0)
-
-        # Build distribution: low pair, some middle, high pair
-        middle = rng2.uniform(y_low_level + d + 1, y_high_level - 1, size=4)
-        y_test = np.sort(np.concatenate([
-            [y_low_level, y_low_level + d],
-            middle,
-            [y_high_level, y_high_level + d]
-        ]))
-
-        delta = min(d / 3.0, 1.0)
-
-        # Low transfer: from index 1 to index 0
-        y_lo = y_test.copy()
-        y_lo[1] -= delta
-        y_lo[0] += delta
-        red_lo = zenga(y_test) - zenga(y_lo)
-
-        # High transfer: from last to second-last
-        y_hi = y_test.copy()
-        y_hi[-1] -= delta
-        y_hi[-2] += delta
-        red_hi = zenga(y_test) - zenga(y_hi)
-
-        if red_lo <= red_hi + TOL:
-            n_dts_fail += 1
-
-    print(f"   Random DTS test: {n_dts_tests} cases, {n_dts_fail} failures")
-    if n_dts_fail > 0:
-        dts_pass = False
-    print(f"   Result: {'✓ PASS' if dts_pass else '✗ FAIL'}")
+    print("   Not tested here: Z fails DTS (integer counterexample and unrestricted")
+    print("   search in verify_corrections.py).")
     print()
 
     # ---- 10. ADDITIVE DECOMPOSABILITY ----
@@ -337,65 +260,8 @@ def main() -> None:
 
     # ---- 11. SUBGROUP CONSISTENCY ----
     print("11. SUBGROUP CONSISTENCY")
-    print("    If Z increases in one subgroup (same mean), does total Z increase?")
-
-    # Create two subgroups
-    y_a = np.array([8.0, 10.0, 12.0])
-    y_b = np.array([50.0, 60.0, 70.0, 80.0])
-    y_total = np.concatenate([y_a, y_b])
-    z_total_before = zenga(y_total)
-
-    # Increase inequality in subgroup A while keeping the mean the same
-    y_a_new = np.array([6.0, 10.0, 14.0])  # same mean (10), more spread
-    assert abs(np.mean(y_a_new) - np.mean(y_a)) < TOL, "Means must match"
-    y_total_new = np.concatenate([y_a_new, y_b])
-    z_total_after = zenga(y_total_new)
-
-    z_a_before = zenga(y_a)
-    z_a_after = zenga(y_a_new)
-
-    print(f"   Subgroup A: {y_a} → {y_a_new}")
-    print(f"   Z(A) before: {z_a_before:.8f}, after: {z_a_after:.8f} (increased: {z_a_after > z_a_before})")
-    print(f"   Z(total) before: {z_total_before:.8f}, after: {z_total_after:.8f}")
-    sc_pass1 = z_total_after > z_total_before + TOL
-    print(f"   Total increased: {'✓' if sc_pass1 else '✗'}")
-
-    # More extensive test
-    rng3 = np.random.default_rng(789)
-    n_sc_tests = 500
-    n_sc_fail = 0
-    for _ in range(n_sc_tests):
-        n_a = rng3.integers(3, 8)
-        n_b = rng3.integers(3, 8)
-        y_a = np.sort(rng3.lognormal(2.0, 0.5, size=n_a))
-        y_b = np.sort(rng3.lognormal(3.0, 0.5, size=n_b))
-        mu_a = np.mean(y_a)
-
-        # Create a more unequal version of subgroup A with same mean
-        # Spread the distribution while keeping the mean fixed
-        y_a_spread = y_a.copy()
-        # Move income from middle to extremes
-        if n_a >= 3:
-            spread_amount = rng3.uniform(0.1, 0.5) * (y_a_spread[1] - y_a_spread[0])
-            y_a_spread[0] -= spread_amount
-            y_a_spread[-1] += spread_amount
-            # Fix mean
-            y_a_spread = y_a_spread * mu_a / np.mean(y_a_spread)
-
-            if np.all(y_a_spread > 0):
-                z_a_orig = zenga(y_a)
-                z_a_new = zenga(y_a_spread)
-                if z_a_new > z_a_orig + TOL:
-                    y_tot_orig = np.concatenate([y_a, y_b])
-                    y_tot_new = np.concatenate([y_a_spread, y_b])
-                    z_tot_orig = zenga(y_tot_orig)
-                    z_tot_new = zenga(y_tot_new)
-                    if z_tot_new <= z_tot_orig + TOL:
-                        n_sc_fail += 1
-
-    print(f"   Random subgroup consistency test: {n_sc_tests} cases, {n_sc_fail} failures")
-    sc_pass = sc_pass1 and (n_sc_fail == 0)
-    print(f"   Result: {'✓ PASS' if sc_pass else '✗ FAIL'}")
+    print("    Not tested here: Z fails subgroup consistency (integer counterexample")
+    print("    and unrestricted search in verify_corrections.py).")
     print()
 
     # ---- SUMMARY ----
