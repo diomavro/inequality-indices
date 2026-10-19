@@ -54,7 +54,8 @@ item that needs no account, key, or author decision. Close items in place with
 - [ ] **Bring `code/verify_properties.py` under the lint gate.**
       Fix its ruff findings without changing what it prints, add it to `LINTED`
       in the Makefile. (Makefile is a guarded path: expect a human merge.)
-- [ ] **Retire or fix the superseded DTS / subgroup tests in `verify_zenga.py`
+- [x] **Done 2026-10-19**: Removed the DTS block (and subgroup block in `verify_zenga.py`) from both scripts, leaving a pointer to `verify_corrections.py`; headers updated.
+      **Retire or fix the superseded DTS / subgroup tests in `verify_zenga.py`
       and `verify_integral_zenga.py`.**
       Both report PASS for properties the Zenga indices fail, because they
       sample only favourable configurations (see the NOTE at the top of each).
