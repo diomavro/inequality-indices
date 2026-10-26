@@ -326,9 +326,15 @@ def integral_zenga(y: npt.ArrayLike) -> float:
 
 
 def percentile_ratio(
-    y: npt.ArrayLike, p: float = 0.9, q: float = 0.1
+    y: npt.ArrayLike,
+    p: float = 0.9,
+    q: float = 0.1,
+    order_statistic: bool = True,
 ) -> float:
     r"""Percentile ratio :math:`P_p / P_q`.
+
+    By default follows the paper's eq. (pq),
+    :math:`y_{(\lceil pn \rceil)} / y_{(\lceil qn \rceil)}`.
 
     Parameters
     ----------
@@ -338,6 +344,9 @@ def percentile_ratio(
         Upper percentile (0 < p < 1).
     q : float, default 0.1
         Lower percentile (0 < q < 1).
+    order_statistic : bool, default True
+        Use order statistics as in the paper. If False, use
+        linearly interpolated percentiles (``np.percentile``).
 
     Returns
     -------
@@ -345,6 +354,13 @@ def percentile_ratio(
         Ratio of the *p*-th to the *q*-th percentile.
     """
     y = np.asarray(y, dtype=np.float64)
+    if order_statistic:
+        ys = np.sort(y)
+        n = ys.size
+        # The tolerance guards against float noise such as 0.7 * 10 > 7.
+        kp = max(int(np.ceil(p * n - 1e-9)), 1)
+        kq = max(int(np.ceil(q * n - 1e-9)), 1)
+        return float(ys[kp - 1] / ys[kq - 1])
     upper = float(np.percentile(y, p * 100))
     lower = float(np.percentile(y, q * 100))
     return upper / lower

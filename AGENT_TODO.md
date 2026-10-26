@@ -61,7 +61,8 @@ item that needs no account, key, or author decision. Close items in place with
       sample only favourable configurations (see the NOTE at the top of each).
       Either delete those two test blocks or rewrite them to sample the full
       domain so they fail as they should; do not leave a misleading PASS.
-- [ ] **Make `percentile_ratio` in `code/inequality_indices.py` follow eq. (pq).**
+- [x] **Done 2026-10-26**: `percentile_ratio` now takes `order_statistic=True` (default, eq. (pq), ceil guarded against float noise); `False` keeps the interpolated version. Only caller is `verify_properties.py`, whose output is byte-identical.
+      **Make `percentile_ratio` in `code/inequality_indices.py` follow eq. (pq).**
       The paper defines R_{p/q} by order statistics y_(ceil(pn)) / y_(ceil(qn));
       the library interpolates with `np.percentile`. Add an `order_statistic`
       keyword defaulting to the paper's definition, update callers, and check
